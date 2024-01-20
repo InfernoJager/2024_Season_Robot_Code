@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.JoystickOrientedDriveCommand;
 import frc.robot.commands.JoystickTurnSpeedDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
+//import frc.robot.commands.Controls;
 
 
 public class RobotContainer {
@@ -20,9 +21,13 @@ public class RobotContainer {
   
   XboxController control = new XboxController(Constants.DRIVE_CONTROL_PORT);
   
+  //Controls controls = new Controls();
+
   public RobotContainer() {
     drive.setDefaultCommand(new JoystickTurnSpeedDriveCommand(drive, control));
     configureBindings();
+    //controls.DriverControls();
+    //controls.OperatorControls();
   }
 
   
