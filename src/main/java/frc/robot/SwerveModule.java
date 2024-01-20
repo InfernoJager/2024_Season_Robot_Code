@@ -40,6 +40,7 @@ public class SwerveModule {
     this.defensiveAngleDeg = VectorR.fromCartesian(info.X, info.Y).getAngle();
     angleMotor.setIdleMode(IdleMode.kBrake);
     driveMotor.setIdleMode(IdleMode.kBrake);
+    //orientationEncoder.setPositionConversionFactor();
     // orientationEncoder.setPosition(0);
     // driveMotor.setSelectedSensorPosition(0);
   }

@@ -51,10 +51,10 @@ public class SwerveModules implements Iterable<SwerveModule> {
   }
 
   public void debugSmartDashboard() {
-    SmartDashboard.putNumber("FR", frontRight.orientationEncoder.getPosition());
-    SmartDashboard.putNumber("FL", frontLeft.orientationEncoder.getPosition());
-    SmartDashboard.putNumber("BR", backRight.orientationEncoder.getPosition());
-    SmartDashboard.putNumber("BL", backLeft.orientationEncoder.getPosition());
+    SmartDashboard.putNumber("FR", frontRight.orientationEncoder.getVoltage());
+    SmartDashboard.putNumber("FL", frontLeft.orientationEncoder.getVoltage());
+    SmartDashboard.putNumber("BR", backRight.orientationEncoder.getVoltage());
+    SmartDashboard.putNumber("BL", backLeft.orientationEncoder.getVoltage());
   } 
 
 }
