@@ -16,6 +16,8 @@ public final class Constants {
   public static final double MODULE_ANGLE_KP = 0.00524;
 
   public static final int DRIVE_CONTROL_PORT = 0;
+  public static final int OPERATOR_CONTROL_PORT = 1;
+  public static final int BUTTON_BOARD_PORT = 2;
 
   public static final int BackLeftTriangleID = 9;
   public static final int BackMiddleTriangleID = 15;

@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -13,21 +14,27 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.JoystickOrientedDriveCommand;
 import frc.robot.commands.JoystickTurnSpeedDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
-//import frc.robot.commands.Controls;
+import frc.robot.commands.DriverControls;
+import frc.robot.commands.OperatorControls;
+import frc.robot.subsystems.RobotSubsystem;
 
 
 public class RobotContainer {
   DriveSubsystem drive = new DriveSubsystem();
+  RobotSubsystem robot = new RobotSubsystem();
   
-  XboxController control = new XboxController(Constants.DRIVE_CONTROL_PORT);
+  XboxController driverController = new XboxController(Constants.DRIVE_CONTROL_PORT);
+  XboxController operatorController = new XboxController(Constants.OPERATOR_CONTROL_PORT);
+  GenericHID buttonBoard = new GenericHID(Constants.BUTTON_BOARD_PORT);
   
-  //Controls controls = new Controls();
+  DriverControls driver;
+  OperatorControls operator;
 
   public RobotContainer() {
-    drive.setDefaultCommand(new JoystickTurnSpeedDriveCommand(drive, control));
+    drive.setDefaultCommand(new JoystickTurnSpeedDriveCommand(drive, driverController));
+    drive.setDefaultCommand(new DriverControls(drive, driverController));
+    robot.setDefaultCommand(new OperatorControls(robot, operatorController, buttonBoard));
     configureBindings();
-    //controls.DriverControls();
-    //controls.OperatorControls();
   }
 
   

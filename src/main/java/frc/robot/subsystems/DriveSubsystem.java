@@ -54,7 +54,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
 
-  public void move(VectorR directionalSpeed, boolean fastTurning, boolean slowTurning) {
+  public void move(VectorR directionalSpeed, boolean fastTurning, boolean slowTurning, double maxSpeed) {
 
     double turnPower = 0;
 
@@ -64,18 +64,21 @@ public class DriveSubsystem extends SubsystemBase {
     if (slowTurning = true) {
       turnPower = 0.25;
     }
+
+    double turnSpeed = maxSpeed * turnPower;
     
     VectorR directionalPull = directionalSpeed.clone();
     directionalPull.rotate(-getYawDegrees());
 
     for (SwerveModule module : modules) {
 
-      VectorR rotationalPull = VectorR.fromPolar(turnPower, module.info.MODULE_TANGENT_DEG);
+      VectorR rotationalPull = VectorR.fromPolar(turnSpeed, module.info.MODULE_TANGENT_DEG);
       VectorR wheelPull = VectorR.addVectors(directionalPull, rotationalPull);
 
       module.update(wheelPull.getMagnitude(), wheelPull.getAngle());
 
     }
+
   }
   
   public void stop() {
