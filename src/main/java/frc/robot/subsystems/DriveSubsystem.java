@@ -38,7 +38,7 @@ public class DriveSubsystem extends SubsystemBase {
    * turn (0-1)
    * NOTE: the speed of any wheel can reach a maximum of turn + |velocity|
    */
-  public void move(VectorR directionalSpeed, double turnSpeed) {
+  public void oldmove(VectorR directionalSpeed, double turnSpeed) {
 
     
     VectorR directionalPull = directionalSpeed.clone();
@@ -47,6 +47,30 @@ public class DriveSubsystem extends SubsystemBase {
     for (SwerveModule module : modules) {
 
       VectorR rotationalPull = VectorR.fromPolar(turnSpeed, module.info.MODULE_TANGENT_DEG);
+      VectorR wheelPull = VectorR.addVectors(directionalPull, rotationalPull);
+
+      module.update(wheelPull.getMagnitude(), wheelPull.getAngle());
+
+    }
+  }
+
+  public void move(VectorR directionalSpeed, boolean fastTurning, boolean slowTurning) {
+
+    double turnPower = 0;
+
+    if (fastTurning = true) {
+      turnPower = 1;
+    }
+    if (slowTurning = true) {
+      turnPower = 0.25;
+    }
+    
+    VectorR directionalPull = directionalSpeed.clone();
+    directionalPull.rotate(-getYawDegrees());
+
+    for (SwerveModule module : modules) {
+
+      VectorR rotationalPull = VectorR.fromPolar(turnPower, module.info.MODULE_TANGENT_DEG);
       VectorR wheelPull = VectorR.addVectors(directionalPull, rotationalPull);
 
       module.update(wheelPull.getMagnitude(), wheelPull.getAngle());
