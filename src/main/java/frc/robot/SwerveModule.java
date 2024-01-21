@@ -18,7 +18,7 @@ public class SwerveModule {
   // HARDWARE
 
   public final CANSparkMax angleMotor;
-  private final CANSparkMax driveMotor;
+  public final CANSparkMax driveMotor;
   public final SparkAnalogSensor orientationEncoder;
 
   // INFORMATION

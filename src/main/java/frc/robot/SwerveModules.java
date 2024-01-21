@@ -57,4 +57,23 @@ public class SwerveModules implements Iterable<SwerveModule> {
     SmartDashboard.putNumber("BL", backLeft.orientationEncoder.getVoltage());
   } 
 
+  public void SwerveStatus() {
+    SmartDashboard.putNumber("CAN1Temp", frontLeft.driveMotor.getMotorTemperature());
+    SmartDashboard.putNumber("CAN1Volt", frontLeft.driveMotor.getBusVoltage());
+    SmartDashboard.putNumber("CAN2Temp", frontLeft.angleMotor.getMotorTemperature());
+    SmartDashboard.putNumber("CAN2Volt", frontLeft.angleMotor.getBusVoltage());
+    SmartDashboard.putNumber("CAN3Temp", frontRight.driveMotor.getMotorTemperature());
+    SmartDashboard.putNumber("CAN3Volt", frontRight.driveMotor.getBusVoltage());
+    SmartDashboard.putNumber("CAN4Temp", frontRight.angleMotor.getMotorTemperature());
+    SmartDashboard.putNumber("CAN4Volt", frontRight.angleMotor.getBusVoltage());
+    SmartDashboard.putNumber("CAN5Temp", backLeft.driveMotor.getMotorTemperature());
+    SmartDashboard.putNumber("CAN5Volt", backLeft.driveMotor.getBusVoltage());
+    SmartDashboard.putNumber("CAN6Temp", backLeft.angleMotor.getMotorTemperature());
+    SmartDashboard.putNumber("CAN6Volt", backLeft.angleMotor.getBusVoltage());
+    SmartDashboard.putNumber("CAN7Temp", backRight.driveMotor.getMotorTemperature());
+    SmartDashboard.putNumber("CAN7Volt", backRight.driveMotor.getBusVoltage());
+    SmartDashboard.putNumber("CAN8Temp", backRight.angleMotor.getMotorTemperature());
+    SmartDashboard.putNumber("CAN8Volt", backRight.angleMotor.getBusVoltage());
+  }
+
 }
