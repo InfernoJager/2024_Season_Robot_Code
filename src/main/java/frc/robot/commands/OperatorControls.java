@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import java.lang.Math;
 import frc.robot.utils.MathR;
@@ -34,29 +33,41 @@ public class OperatorControls extends Command{
         final int ampPreset = 1;
         final int speakerPreset = 2;
         final int intakePreset = 3;
-        final int alignPreset = 4;
+        final int intake = 4;
+        final int speakerShoot = 5;
+        final int beldorf = 8;
 
         //Operator Xbox Controller
-        if (controller.getRightTriggerAxis() >= 0.5) {
-            //shoot note
-        }
-        if (controller.getLeftTriggerAxis() >= 0.5) {
-            //intake note
-        }
+        // if (controller.getRightTriggerAxis() >= 0.5) {
+        //     //shoot note speaker
+        // }
+        // if (controller.getRightTriggerAxis() >= 0.5 && controller.getAButton()) {
+        //     //shoot note amp
+        // }
+        // if (controller.getLeftTriggerAxis() >= 0.5) {
+        //     //intake note
+        // }
         
         //Operator Button Board
-        if (buttonBoard.getRawButton(ampPreset)) {
+        if (buttonBoard.getRawButtonPressed(ampPreset)) {
             //amp preset (118 or 119 degree rotation, low power)
         }
-        if (buttonBoard.getRawButton(speakerPreset)) {
-            //speaker preset (varying dgrees based on april tag, mid-full power based on range)
+        if (buttonBoard.getRawButtonPressed(speakerPreset)) {
+            //speaker preset (varying dgrees based on april tag, mid-full power based on range, no greater than 60, no less then 20)
         }
-        if (buttonBoard.getRawButton(intakePreset)) {
+        if (buttonBoard.getRawButtonPressed(intakePreset)) {
             //intake preset (20 degrees, low power)
         }
-        if (buttonBoard.getRawButton(alignPreset)) {
-            //align preset (align cannon for speaker based off april tags)
+        if (buttonBoard.getRawButton(intake)) {
+            //intake note
         }
+        if (buttonBoard.getRawButton(speakerShoot)) {
+            //shoots note into speakers
+        }
+        if (buttonBoard.getRawButton(beldorf)) {
+            //shoots note into amp
+        }
+            
 
     }
 
