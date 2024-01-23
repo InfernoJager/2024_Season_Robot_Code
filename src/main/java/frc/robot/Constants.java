@@ -19,8 +19,8 @@ public final class Constants {
   public static final int OPERATOR_CONTROL_PORT = 1;
   public static final int BUTTON_BOARD_PORT = 2;
 
-  public static final int BackLeftTriangleID = 9;
-  public static final int BackMiddleTriangleID = 15;
+  public static final int TestLeft = 9;
+  public static final int TestRight = 15;
   public static final int BackRightDriveID = 5;
   public static final int BackRightSteerID = 6;
   public static final int BackLeftDriveID = 7;
@@ -31,10 +31,10 @@ public final class Constants {
   public static final int FrontLeftSteerID = 4;
 
   // Swerve
-  public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(FrontRightDriveID, FrontRightSteerID, 360, 0, 1, -1);
-  public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(FrontLeftDriveID, FrontLeftSteerID, 360, 0, 1, 1);
-  public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(BackRightDriveID, BackRightSteerID, 360, 0, -1, -1);
-  public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(BackLeftDriveID, BackLeftSteerID, 360, 0, -1, 1);
+  public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(FrontRightDriveID, FrontRightSteerID, 3.3, 360, 0, 1, -1);
+  public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(FrontLeftDriveID, FrontLeftSteerID, 3.3, 360, 0, 1, 1);
+  public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(BackRightDriveID, BackRightSteerID, 3.3, 360, 0, -1, -1);
+  public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(BackLeftDriveID, BackLeftSteerID, 3.3, 360, 0, -1, 1);
 
   
 }

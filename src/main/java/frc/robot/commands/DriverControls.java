@@ -34,13 +34,13 @@ public class DriverControls extends Command {
         boolean deadZone = (driverController.getLeftX() <= Math.abs(0.1) || driverController.getLeftY() <= Math.abs(0.1));
 
         //Driver Xbox Controller
-        if (deadZone = false) {
+        if (deadZone == false) {
             drive.move(leftJoystick, fastTurning, slowTurning, 0.8);
         }
-        if (fastTurning = true) {
+        if (fastTurning) {
             //fast spin
         }
-        if (slowTurning = true) {
+        if (slowTurning) {
             //slow spin
         }
         if (driverController.getAButton()) {

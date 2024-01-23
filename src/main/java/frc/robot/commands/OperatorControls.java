@@ -35,7 +35,7 @@ public class OperatorControls extends Command{
         final int intakePreset = 3;
         final int intake = 4;
         final int speakerShoot = 5;
-        final int beldorf = 8;
+        final int ampShoot = 6;
 
         //Operator Xbox Controller
         // if (controller.getRightTriggerAxis() >= 0.5) {
@@ -64,7 +64,7 @@ public class OperatorControls extends Command{
         if (buttonBoard.getRawButton(speakerShoot)) {
             //shoots note into speakers
         }
-        if (buttonBoard.getRawButton(beldorf)) {
+        if (buttonBoard.getRawButton(ampShoot)) {
             //shoots note into amp
         }
             

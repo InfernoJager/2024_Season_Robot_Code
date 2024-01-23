@@ -58,6 +58,7 @@ public class SwerveModules implements Iterable<SwerveModule> {
   } 
 
   public void SwerveStatus() {
+    
     SmartDashboard.putNumber("CAN1Temp", frontLeft.driveMotor.getMotorTemperature());
     SmartDashboard.putNumber("CAN1Volt", frontLeft.driveMotor.getBusVoltage());
     SmartDashboard.putNumber("CAN2Temp", frontLeft.angleMotor.getMotorTemperature());
@@ -74,6 +75,7 @@ public class SwerveModules implements Iterable<SwerveModule> {
     SmartDashboard.putNumber("CAN7Volt", backRight.driveMotor.getBusVoltage());
     SmartDashboard.putNumber("CAN8Temp", backRight.angleMotor.getMotorTemperature());
     SmartDashboard.putNumber("CAN8Volt", backRight.angleMotor.getBusVoltage());
+    
   }
 
 }

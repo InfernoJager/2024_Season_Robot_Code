@@ -25,7 +25,6 @@ public class SwerveModule {
   private final double defensiveAngleDeg;
   private double wheelOrientation = 0.0;
   public final SwerveModuleInfo info;
-  
 
   public SwerveModule(SwerveModuleInfo info) {
     this.info = info;
@@ -35,7 +34,6 @@ public class SwerveModule {
     this.defensiveAngleDeg = VectorR.fromCartesian(info.X, info.Y).getAngle();
     angleMotor.setIdleMode(IdleMode.kBrake);
     driveMotor.setIdleMode(IdleMode.kBrake);
-    //orientationEncoder.setPositionConversionFactor();
     // orientationEncoder.setPosition(0);
     // driveMotor.setSelectedSensorPosition(0);
   }
@@ -43,6 +41,18 @@ public class SwerveModule {
   //RESET METHODS
   public void resetDriveEncoder() {
     // driveMotor.setSelectedSensorPosition(0);
+  }
+
+  public double getWheelAngle() {
+    
+    double encoderVoltage;
+    double degreesPerVolt;
+    degreesPerVolt = info.MAX_ENCODER_VOLTAGE/360;
+
+    encoderVoltage = orientationEncoder.getVoltage();
+    
+    return encoderVoltage * degreesPerVolt;
+
   }
 
   /*
@@ -81,7 +91,7 @@ public class SwerveModule {
    * angle degrees follows coordinate plane standards, sets module wheel to angle
    */
   public void update(double speed, double angleDegrees) {
-    wheelOrientation = orientationEncoder.getPosition();
+    wheelOrientation = getWheelAngle();
 
     desired.setFromPolar(speed, angleDegrees);
 
