@@ -3,11 +3,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.swervemodule.SwerveModule;
+import frc.robot.swervemodule.SwerveModules;
+
 import java.lang.Math;
 import frc.robot.utils.MathR;
 import frc.robot.utils.VectorR;
-import frc.robot.SwerveModules;
-import frc.robot.SwerveModule;
 
 public class DriverControls extends Command {
     

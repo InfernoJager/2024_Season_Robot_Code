@@ -7,8 +7,8 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.SwerveModule;
-import frc.robot.SwerveModules;
+import frc.robot.swervemodule.SwerveModule;
+import frc.robot.swervemodule.SwerveModules;
 import frc.robot.utils.VectorR;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -58,10 +58,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     double turnPower = 0;
 
-    if (fastTurning = true) {
+    if (fastTurning) {
       turnPower = 1;
     }
-    if (slowTurning = true) {
+    if (slowTurning) {
       turnPower = 0.25;
     }
 

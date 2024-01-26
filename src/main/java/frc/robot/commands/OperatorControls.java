@@ -36,8 +36,10 @@ public class OperatorControls extends Command{
         final int intake = 4;
         final int speakerShoot = 5;
         final int ampShoot = 6;
+        final int blank1 = 7;
+        final int blank2 = 8;
 
-        //Operator Xbox Controller
+        /*Operator Xbox Controller*/
         // if (controller.getRightTriggerAxis() >= 0.5) {
         //     //shoot note speaker
         // }
@@ -48,7 +50,7 @@ public class OperatorControls extends Command{
         //     //intake note
         // }
         
-        //Operator Button Board
+        /*Operator Button Board*/
         if (buttonBoard.getRawButtonPressed(ampPreset)) {
             //amp preset (118 or 119 degree rotation, low power)
         }
@@ -68,7 +70,6 @@ public class OperatorControls extends Command{
             //shoots note into amp
         }
             
-
     }
 
     @Override

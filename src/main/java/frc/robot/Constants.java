@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import frc.robot.swervemodule.SwerveModuleInfo;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -19,8 +21,8 @@ public final class Constants {
   public static final int OPERATOR_CONTROL_PORT = 1;
   public static final int BUTTON_BOARD_PORT = 2;
 
-  public static final int TestLeft = 9;
-  public static final int TestRight = 15;
+  public static final int TestLeftID = 9;
+  public static final int TestRightID = 15;
   public static final int BackRightDriveID = 5;
   public static final int BackRightSteerID = 6;
   public static final int BackLeftDriveID = 7;
@@ -29,6 +31,13 @@ public final class Constants {
   public static final int FrontRightSteerID = 2;
   public static final int FrontLeftDriveID = 3;
   public static final int FrontLeftSteerID = 4;
+  public static final int LeftPivotID = 9;
+  public static final int RightPivotID = 10;
+  public static final int BeltID = 11;
+  public static final int LeftCannonID = 12;
+  public static final int RightCannonID = 13;
+  public static final int IntakeID = 14;
+  public static final int ClimbID = 15;
 
   // Swerve
   public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(FrontRightDriveID, FrontRightSteerID, 3.3, 360, 0, 1, -1);
