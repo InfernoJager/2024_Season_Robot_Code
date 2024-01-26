@@ -28,6 +28,7 @@ public class SwerveModule {
   public final SwerveModuleInfo info;
 
   public SwerveModule(SwerveModuleInfo info) {
+    
     this.info = info;
     this.angleMotor = new CANSparkMax(info.TURN_ID, MotorType.kBrushless);
     this.driveMotor = new CANSparkMax(info.DRIVE_ID, MotorType.kBrushless);
@@ -37,6 +38,7 @@ public class SwerveModule {
     driveMotor.setIdleMode(IdleMode.kBrake);
     // orientationEncoder.setPosition(0);
     // driveMotor.setSelectedSensorPosition(0);
+    
   }
 
   //RESET METHODS

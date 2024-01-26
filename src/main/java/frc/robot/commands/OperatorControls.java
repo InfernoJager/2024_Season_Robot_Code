@@ -36,8 +36,8 @@ public class OperatorControls extends Command{
         final int intake = 4;
         final int speakerShoot = 5;
         final int ampShoot = 6;
-        final int blank1 = 7;
-        final int blank2 = 8;
+        final int stuckNotePreset = 7;
+        final int stuckNoteOuttake = 8;
 
         /*Operator Xbox Controller*/
         // if (controller.getRightTriggerAxis() >= 0.5) {
@@ -68,6 +68,12 @@ public class OperatorControls extends Command{
         }
         if (buttonBoard.getRawButton(ampShoot)) {
             //shoots note into amp
+        }
+        if (buttonBoard.getRawButton(stuckNotePreset)) {
+            //get note unstuck preset (90 degrees)
+        }
+        if (buttonBoard.getRawButton(stuckNoteOuttake)) {
+            //outtakes the intake area in the case of a note stuck under
         }
             
     }
