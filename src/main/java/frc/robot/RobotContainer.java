@@ -31,9 +31,9 @@ public class RobotContainer {
   OperatorControls operator;
 
   public RobotContainer() {
-    drive.setDefaultCommand(new JoystickTurnSpeedDriveCommand(drive, driverController));
+    //drive.setDefaultCommand(new JoystickOrientedDriveCommand(drive, driverController));
     drive.setDefaultCommand(new DriverControls(drive, driverController));
-    robot.setDefaultCommand(new OperatorControls(robot, operatorController, buttonBoard));
+    //robot.setDefaultCommand(new OperatorControls(robot, operatorController, buttonBoard));
     configureBindings();
   }
 

@@ -25,4 +25,23 @@ public class MathR {
     public static double lerp(double outputMin, double outputMax, double inputMin, double inputMax, double input) {
         return outputMin + (outputMax - outputMin)*(input - inputMin)/(inputMax - inputMin);
     }
+
+    public static double coordinatesToAngle(double x, double y) {
+        
+        double radians = Math.atan2(y, x);
+        double degrees = (radians*180)/Math.PI;
+
+        return degrees;
+
+    }
+
+    public static double coordinatesToMagnitude(double x, double y) {
+
+        double X = Math.pow(x, 2);
+        double Y = Math.pow(y, 2);
+        double magnitude = Math.sqrt(X+Y);
+
+        return magnitude;
+
+    }
 }

@@ -5,17 +5,22 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.DriverControls;
 import frc.robot.swervemodule.SwerveModule;
 import frc.robot.swervemodule.SwerveModules;
 import frc.robot.utils.VectorR;
+import frc.robot.utils.MathR;
 
 public class DriveSubsystem extends SubsystemBase {
 
   // COMPONENTS
   public final SwerveModules modules;
   private static AHRS gyro;
+  public XboxController driverController;
 
   // OTHER
   private boolean defensiveMode = true;
@@ -52,30 +57,41 @@ public class DriveSubsystem extends SubsystemBase {
       module.update(wheelPull.getMagnitude(), wheelPull.getAngle());
 
     }
+
   }
 
-  public void move(VectorR directionalSpeed, boolean fastTurning, boolean slowTurning, double maxSpeed) {
+  public void move(double controlX, double controlY, Boolean aPressed, Boolean startPressed) {
 
-    double turnPower = 0;
-
-    if (fastTurning) {
-      turnPower = 1;
-    }
-    if (slowTurning) {
-      turnPower = 0.25;
-    }
-
-    double turnSpeed = maxSpeed * turnPower;
-    
-    VectorR directionalPull = directionalSpeed.clone();
-    directionalPull.rotate(-getYawDegrees());
+    double getToDirection;
 
     for (SwerveModule module : modules) {
 
-      VectorR rotationalPull = VectorR.fromPolar(turnSpeed, module.info.MODULE_TANGENT_DEG);
-      VectorR wheelPull = VectorR.addVectors(directionalPull, rotationalPull);
+      double swerveAngle = module.getAngle();
+      double driveMultiplier;
 
-      module.update(wheelPull.getMagnitude(), wheelPull.getAngle());
+      if (startPressed && !aPressed) {
+        driveMultiplier = 2;
+      } else if (aPressed && !startPressed) {
+        driveMultiplier = 0.5;
+      } else {
+        driveMultiplier = 1;
+      }
+
+      double joystickAngle = MathR.coordinatesToAngle(controlX, controlY);
+      double joystickMagnitude = Math.min(MathR.coordinatesToMagnitude(controlX, controlY), 0.125);
+
+      if (Math.abs(swerveAngle - joystickAngle) >= 0) {
+        double angleOffset = MathR.getDistanceToAngle(swerveAngle, joystickAngle);
+
+        double power = -angleOffset/360;
+        getToDirection = Math.max(Math.abs(power), 0) * Math.signum(power);
+
+        module.angleMotor.set(getToDirection);
+        module.driveMotor.set(joystickMagnitude * driveMultiplier);
+      } else {
+        module.angleMotor.set(0);
+        module.driveMotor.set(0);
+      }
 
     }
 
@@ -83,10 +99,7 @@ public class DriveSubsystem extends SubsystemBase {
   
   public void stop() {
     for (SwerveModule module : modules) {
-      if (defensiveMode)
-        module.stopDefensively();
-      else
-        module.stop();
+      module.stop();
     }
 
   }
