@@ -15,7 +15,7 @@ public class DriverControls extends Command {
     
     private final DriveSubsystem drive;
     private final XboxController driverController;
-    private final VectorR leftJoystick = new VectorR();
+    private VectorR leftJoystick = new VectorR();
 
     public DriverControls(DriveSubsystem drive, XboxController driverController) {
         
@@ -31,31 +31,37 @@ public class DriverControls extends Command {
     @Override
     public void execute() {
         
-        boolean fastTurning = (driverController.getLeftTriggerAxis() >= 0.1 || driverController.getRightTriggerAxis() >= 0.1);
-        boolean slowTurning = (driverController.getLeftBumper() || driverController.getRightBumper());
         boolean deadZone = (Math.abs(driverController.getLeftX()) <= 0.1 && Math.abs(driverController.getLeftY()) <= 0.1);
+        if (!deadZone) {
+            leftJoystick = VectorR.fromCartesian(driverController.getLeftX()*0.2, driverController.getLeftY()*0.2);
+        } else {
+            leftJoystick = new VectorR();
+        }
+        // boolean fastTurning = (driverController.getLeftTriggerAxis() >= 0.1 || driverController.getRightTriggerAxis() >= 0.1);
+        // boolean slowTurning = (driverController.getLeftBumper() || driverController.getRightBumper());
 
         SmartDashboard.putBoolean("deadzone", deadZone);
         SmartDashboard.putNumber("LeftX", driverController.getLeftX());
         SmartDashboard.putNumber("LeftY", driverController.getLeftY());
 
         //Driver Xbox Controller
-        if (deadZone == false) {
-            drive.move(driverController.getLeftX(), driverController.getLeftY(), driverController.getAButton(), driverController.getStartButton());
+        // if (deadZone == false) {
+        //     drive.move(driverController.getLeftX(), driverController.getLeftY(), driverController.getAButton(), driverController.getStartButton());
+        // } else {
+        //     drive.stop();
+        // }
+        if (driverController.getRightTriggerAxis() > 0.1) {
+            drive.oldmove(leftJoystick, 0.25);
+        } else if (driverController.getLeftTriggerAxis() > 0.1) {
+            drive.oldmove(leftJoystick, -0.25);
+        } else if (driverController.getRightBumper()) {
+            drive.oldmove(leftJoystick, 0.125);
+        } else if (driverController.getLeftBumper()) {
+            drive.oldmove(leftJoystick, -0.125);
+        } else if (leftJoystick.getMagnitude() > 0.1) {
+            drive.oldmove(leftJoystick, 0);
         } else {
             drive.stop();
-        }
-        if (fastTurning) {
-            //fast spin
-        }
-        if (slowTurning) {
-            //slow spin
-        }
-        if (driverController.getAButton()) {
-            //slow down motors
-        }
-        if (driverController.getStartButton()) {
-            //speed up motors
         }
 
     }

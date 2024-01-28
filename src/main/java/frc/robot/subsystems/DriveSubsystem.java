@@ -47,7 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     
     VectorR directionalPull = directionalSpeed.clone();
-    directionalPull.rotate(-getYawDegrees());
+    directionalPull.rotate(getYawDegrees());
 
     for (SwerveModule module : modules) {
 
@@ -99,7 +99,7 @@ public class DriveSubsystem extends SubsystemBase {
   
   public void stop() {
     for (SwerveModule module : modules) {
-      module.stop();
+      module.stopDefensively();
     }
 
   }

@@ -107,7 +107,13 @@ public class SwerveModule {
     double angle_power = MathR
         .limit(Constants.MODULE_ANGLE_KP * MathR.getDistanceToAngle(getWheelOrientationDegrees(), desiredAngle()), -1, 1);
    
-  
+    if (Math.abs(angle_power) < 0.05) {
+      angle_power = 0;
+    }
+    if (Math.abs(speed_power) < 0.01) {
+      speed_power = 0;
+    }
+    System.out.println(speed_power + " " + angle_power);
     driveMotor.set(speed_power); 
     angleMotor.set(angle_power);
 
@@ -120,6 +126,6 @@ public class SwerveModule {
   }
 
   public void stopDefensively() {
-    update(0.0000001,  defensiveAngleDeg);
+    update(0.0000000000000000000000000000000000000001,  defensiveAngleDeg);
   }
 }

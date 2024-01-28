@@ -15,7 +15,7 @@ import frc.robot.swervemodule.SwerveModuleInfo;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final double MODULE_ANGLE_KP = 0.00524;
+  public static final double MODULE_ANGLE_KP = -0.00524;
 
   public static final int DRIVE_CONTROL_PORT = 0;
   public static final int OPERATOR_CONTROL_PORT = 1;
@@ -41,8 +41,8 @@ public final class Constants {
 
   // Swerve
   public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(FrontRightDriveID, FrontRightSteerID, 3.316, 360, 53.149125, 1, -1);
-  public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(FrontLeftDriveID, FrontLeftSteerID, 3.339, 360, 262.675202, 1, 1);
-  public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(BackRightDriveID, BackRightSteerID, 3.341, 360, 106.836277, -1, -1);
+  public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(FrontLeftDriveID, FrontLeftSteerID, 3.339, 360, 262.675202, -1, -1);
+  public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(BackRightDriveID, BackRightSteerID, 3.341, 360, 106.836277, 1, 1);
   public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(BackLeftDriveID, BackLeftSteerID, 3.316, 360, 126.046818, -1, 1);
 
   

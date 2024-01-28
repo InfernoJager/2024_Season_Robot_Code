@@ -52,13 +52,13 @@ public class SwerveModules implements Iterable<SwerveModule> {
 
   public void debugSmartDashboard() {
     
-    SmartDashboard.putNumber("FRAngle", frontRight.getWheelAngle());
+    SmartDashboard.putNumber("FRAngle", frontRight.getAngle());
     SmartDashboard.putNumber("FRPower", frontRight.angleMotor.get());
-    SmartDashboard.putNumber("FLAngle", frontLeft.getWheelAngle());
+    SmartDashboard.putNumber("FLAngle", frontLeft.getAngle());
     SmartDashboard.putNumber("FLPower", frontLeft.angleMotor.get());
-    SmartDashboard.putNumber("BRAngle", backRight.getWheelAngle());
+    SmartDashboard.putNumber("BRAngle", backRight.getAngle());
     SmartDashboard.putNumber("BRPower", backRight.angleMotor.get());
-    SmartDashboard.putNumber("BLAngle", backLeft.getWheelAngle());
+    SmartDashboard.putNumber("BLAngle", backLeft.getAngle());
     SmartDashboard.putNumber("BLPower", backLeft.angleMotor.get());
 
   } 
