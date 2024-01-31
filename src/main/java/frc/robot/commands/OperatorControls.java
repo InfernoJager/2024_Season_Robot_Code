@@ -40,15 +40,9 @@ public class OperatorControls extends Command{
         final int stuckNoteOuttake = 8;
 
         /*Operator Xbox Controller*/
-        // if (controller.getRightTriggerAxis() >= 0.5) {
-        //     //shoot note speaker
-        // }
-        // if (controller.getRightTriggerAxis() >= 0.5 && controller.getAButton()) {
-        //     //shoot note amp
-        // }
-        // if (controller.getLeftTriggerAxis() >= 0.5) {
-        //     //intake note
-        // }
+        if (controller.getAButtonPressed()) {
+            robot.PairedSpin(-0.05, 3);
+        }
         
         /*Operator Button Board*/
         if (buttonBoard.getRawButtonPressed(ampPreset)) {

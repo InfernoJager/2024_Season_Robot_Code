@@ -4,9 +4,9 @@ public class MotorInfo {
     
     public final int ID;
 
-    public MotorInfo(int motor_CAN_ID) {
+    public MotorInfo(int MOTOR_CAN_ID, double MAX_ENCODER_VALUE, double REFERENCE_ANGLE) {
         
-        ID = motor_CAN_ID;
+        ID = MOTOR_CAN_ID;
         
     }
 

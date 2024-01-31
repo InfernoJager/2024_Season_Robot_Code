@@ -113,7 +113,7 @@ public class SwerveModule {
     if (Math.abs(speed_power) < 0.01) {
       speed_power = 0;
     }
-    System.out.println(speed_power + " " + angle_power);
+    
     driveMotor.set(speed_power); 
     angleMotor.set(angle_power);
 

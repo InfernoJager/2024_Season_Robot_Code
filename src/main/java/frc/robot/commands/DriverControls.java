@@ -51,15 +51,15 @@ public class DriverControls extends Command {
         //     drive.stop();
         // }
         if (driverController.getRightTriggerAxis() > 0.1) {
-            drive.oldmove(leftJoystick, 0.25);
+            drive.move(leftJoystick, 0.25, driverController.getAButton(), driverController.getStartButton());
         } else if (driverController.getLeftTriggerAxis() > 0.1) {
-            drive.oldmove(leftJoystick, -0.25);
+            drive.move(leftJoystick, -0.25, driverController.getAButton(), driverController.getStartButton());
         } else if (driverController.getRightBumper()) {
-            drive.oldmove(leftJoystick, 0.125);
+            drive.move(leftJoystick, 0.125, driverController.getAButton(), driverController.getStartButton());
         } else if (driverController.getLeftBumper()) {
-            drive.oldmove(leftJoystick, -0.125);
+            drive.move(leftJoystick, -0.125, driverController.getAButton(), driverController.getStartButton());
         } else if (leftJoystick.getMagnitude() > 0.1) {
-            drive.oldmove(leftJoystick, 0);
+            drive.move(leftJoystick, 0, driverController.getAButton(), driverController.getStartButton());
         } else {
             drive.stop();
         }

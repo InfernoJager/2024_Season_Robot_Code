@@ -43,9 +43,20 @@ public class DriveSubsystem extends SubsystemBase {
    * turn (0-1)
    * NOTE: the speed of any wheel can reach a maximum of turn + |velocity|
    */
-  public void oldmove(VectorR directionalSpeed, double turnSpeed) {
+  public void move(VectorR directionalSpeed, double turnSpeed, boolean aPressed, boolean startPressed) {
 
-    
+    double speedMultiplier;
+
+    if (startPressed && aPressed) {
+      speedMultiplier = 1;
+    } else if (aPressed) {
+      speedMultiplier = 0.5;
+    } else if (startPressed) {
+      speedMultiplier = 2;
+    } else {
+      speedMultiplier = 1;
+    }
+
     VectorR directionalPull = directionalSpeed.clone();
     directionalPull.rotate(getYawDegrees());
 
@@ -54,44 +65,7 @@ public class DriveSubsystem extends SubsystemBase {
       VectorR rotationalPull = VectorR.fromPolar(turnSpeed, module.info.MODULE_TANGENT_DEG);
       VectorR wheelPull = VectorR.addVectors(directionalPull, rotationalPull);
 
-      module.update(wheelPull.getMagnitude(), wheelPull.getAngle());
-
-    }
-
-  }
-
-  public void move(double controlX, double controlY, Boolean aPressed, Boolean startPressed) {
-
-    double getToDirection;
-
-    for (SwerveModule module : modules) {
-
-      double swerveAngle = module.getAngle();
-      double driveMultiplier;
-
-      if (startPressed && !aPressed) {
-        driveMultiplier = 2;
-      } else if (aPressed && !startPressed) {
-        driveMultiplier = 0.5;
-      } else {
-        driveMultiplier = 1;
-      }
-
-      double joystickAngle = MathR.coordinatesToAngle(controlX, controlY);
-      double joystickMagnitude = Math.min(MathR.coordinatesToMagnitude(controlX, controlY), 0.125);
-
-      if (Math.abs(swerveAngle - joystickAngle) >= 0) {
-        double angleOffset = MathR.getDistanceToAngle(swerveAngle, joystickAngle);
-
-        double power = -angleOffset/360;
-        getToDirection = Math.max(Math.abs(power), 0) * Math.signum(power);
-
-        module.angleMotor.set(getToDirection);
-        module.driveMotor.set(joystickMagnitude * driveMultiplier);
-      } else {
-        module.angleMotor.set(0);
-        module.driveMotor.set(0);
-      }
+      module.update(wheelPull.getMagnitude() * speedMultiplier, wheelPull.getAngle());
 
     }
 

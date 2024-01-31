@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.JoystickOrientedDriveCommand;
-import frc.robot.commands.JoystickTurnSpeedDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.commands.DriverControls;
 import frc.robot.commands.OperatorControls;
@@ -33,7 +31,7 @@ public class RobotContainer {
   public RobotContainer() {
     //drive.setDefaultCommand(new JoystickOrientedDriveCommand(drive, driverController));
     drive.setDefaultCommand(new DriverControls(drive, driverController));
-    //robot.setDefaultCommand(new OperatorControls(robot, operatorController, buttonBoard));
+    robot.setDefaultCommand(new OperatorControls(robot, operatorController, buttonBoard));
     configureBindings();
   }
 
