@@ -3,9 +3,6 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.GenericHID;
-import java.lang.Math;
-import frc.robot.utils.MathR;
-import frc.robot.utils.VectorR;
 import frc.robot.subsystems.RobotSubsystem;
 
 public class OperatorControls extends Command{
@@ -40,9 +37,6 @@ public class OperatorControls extends Command{
         final int stuckNoteOuttake = 8;
 
         /*Operator Xbox Controller*/
-        if (controller.getAButtonPressed()) {
-            robot.PairedSpin(-0.05, 3);
-        }
         
         /*Operator Button Board*/
         if (buttonBoard.getRawButtonPressed(ampPreset)) {

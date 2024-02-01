@@ -9,11 +9,10 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.DriverControls;
 import frc.robot.swervemodule.SwerveModule;
 import frc.robot.swervemodule.SwerveModules;
 import frc.robot.utils.VectorR;
-import frc.robot.utils.MathR;
+import edu.wpi.first.wpilibj.Timer;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -73,7 +72,13 @@ public class DriveSubsystem extends SubsystemBase {
   
   public void stop() {
     for (SwerveModule module : modules) {
+      
+      module.stop();
+
+      Timer.delay(1);
+      
       module.stopDefensively();
+
     }
 
   }

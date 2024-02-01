@@ -2,32 +2,40 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.motor.EncodedMotor;
-import frc.robot.motor.Motor;
+import frc.robot.motor.PairedMotors;
 import frc.robot.Constants;
 
 public class RobotSubsystem extends SubsystemBase {
     
-    public final Motor mainMotor;
-    // public final EncodedMotor encodedMain;
-    public final Motor slaveMotor;
+    public final PairedMotors cannon;
+    public final PairedMotors pivot;
 
     public RobotSubsystem() {
         
-        mainMotor = new Motor(Constants.CANNON_MAIN);
-        slaveMotor = new Motor(Constants.CANNON_SLAVE);
+        this.cannon = new PairedMotors(Constants.CANNON_MAIN, Constants.CANNON_SLAVE);
+        this.pivot = new PairedMotors(Constants.PIVOT_MAIN, Constants.PIVOT_SLAVE);
 
     }
 
-    public void PairedSpin(double speed, double length) {
-        
-        mainMotor.motor.set(speed);
-        slaveMotor.motor.set(-speed);
-        
+    public void Shoot(double speed, double length) {
+
+        cannon.Spin(speed);
+
         Timer.delay(length);
 
-        mainMotor.motor.set(0);
-        slaveMotor.motor.set(0);
+        cannon.Spin(0);
+
+    }
+
+    public void Pivot(double currentAngle, double desiredAngle, double speed, double minAngle, double maxAngle) {
+
+        boolean safezone = (desiredAngle > minAngle || desiredAngle < maxAngle);
+        
+        if (Math.abs(currentAngle - desiredAngle) > 1 && safezone) {
+            pivot.Spin(speed);
+        } else {
+            pivot.Spin(0);
+        }
 
     }
     

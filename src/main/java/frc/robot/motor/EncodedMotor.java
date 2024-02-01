@@ -4,11 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAnalogSensor;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.math.controller.PIDController;
-// import frc.robot.Constants;
-// import frc.robot.utils.MathR;
-// import frc.robot.utils.VectorR;
 
 public class EncodedMotor {
     
