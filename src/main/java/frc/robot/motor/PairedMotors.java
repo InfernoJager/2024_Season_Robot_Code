@@ -22,7 +22,7 @@ public class PairedMotors {
     }
 
     public double getRawAngle(boolean degreesOrVoltage) {
-
+        
         double rawAngle;
 
         if (degreesOrVoltage) {
@@ -43,7 +43,7 @@ public class PairedMotors {
 
     public double getAngle() {
         
-        double angle = getRawAngle() - encodedMotor.info.REFERENCE_ANGLE;
+        double angle = getRawAngle(true) - encodedMotor.info.REFERENCE_ANGLE;
         
         return angle;
 
