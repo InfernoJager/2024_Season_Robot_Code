@@ -12,7 +12,7 @@ public class Motors {
 
     }
 
-    public void Spin(double speed, double length) {
+    public void Spin(double speed) {
 
         motor.motor.set(speed);
 

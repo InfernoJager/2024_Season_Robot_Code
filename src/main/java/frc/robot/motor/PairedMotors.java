@@ -8,9 +8,9 @@ public class PairedMotors {
 
     public PairedMotors(MotorInfo main, MotorInfo slave) {
         
-        mainMotor = new Motor(main);
-        encodedMotor = new EncodedMotor(main);
-        slaveMotor = new Motor(slave);
+        this.mainMotor = new Motor(main);
+        this.encodedMotor = new EncodedMotor(main);
+        this.slaveMotor = new Motor(slave);
 
     }
 
@@ -21,9 +21,29 @@ public class PairedMotors {
 
     }
 
+    public double getRawAngle(boolean degreesOrVoltage) {
+
+        double rawAngle;
+
+        if (degreesOrVoltage) {
+            double degreePosition = encodedMotor.orientationEncoder.getPosition();
+            
+            rawAngle = degreePosition;
+        } else {
+            double degreesPerVolt = 360/encodedMotor.info.MAX_ENCODER_VALUE;
+            double encoderVoltage = encodedMotor.orientationEncoder.getVoltage();
+            double voltsPosition = degreesPerVolt * encoderVoltage;
+
+            rawAngle = voltsPosition;
+        }
+
+        return rawAngle;
+
+    }
+
     public double getAngle() {
         
-        double angle = encodedMotor.orientationEncoder.getPosition();
+        double angle = getRawAngle() - encodedMotor.info.REFERENCE_ANGLE;
         
         return angle;
 

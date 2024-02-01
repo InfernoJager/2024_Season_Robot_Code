@@ -34,19 +34,12 @@ public class DriverControls extends Command {
         } else {
             leftJoystick = new VectorR();
         }
-        // boolean fastTurning = (driverController.getLeftTriggerAxis() >= 0.1 || driverController.getRightTriggerAxis() >= 0.1);
-        // boolean slowTurning = (driverController.getLeftBumper() || driverController.getRightBumper());
 
         SmartDashboard.putBoolean("deadzone", deadZone);
         SmartDashboard.putNumber("LeftX", driverController.getLeftX());
         SmartDashboard.putNumber("LeftY", driverController.getLeftY());
 
         //Driver Xbox Controller
-        // if (deadZone == false) {
-        //     drive.move(driverController.getLeftX(), driverController.getLeftY(), driverController.getAButton(), driverController.getStartButton());
-        // } else {
-        //     drive.stop();
-        // }
         if (driverController.getRightTriggerAxis() > 0.1) {
             drive.move(leftJoystick, 0.25, driverController.getAButton(), driverController.getStartButton());
         } else if (driverController.getLeftTriggerAxis() > 0.1) {
