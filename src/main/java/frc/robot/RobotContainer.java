@@ -13,6 +13,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.commands.DriverControls;
 import frc.robot.commands.OperatorControls;
 import frc.robot.subsystems.RobotSubsystem;
+import frc.robot.motor.Motors;
 
 
 public class RobotContainer {
@@ -25,6 +26,7 @@ public class RobotContainer {
   
   DriverControls driver;
   OperatorControls operator;
+  Motors encodeTest;
 
   public RobotContainer() {
     drive.setDefaultCommand(new DriverControls(drive, driverController));

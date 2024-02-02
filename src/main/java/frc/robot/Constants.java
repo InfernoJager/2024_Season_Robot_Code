@@ -22,6 +22,7 @@ public final class Constants {
   public static final int OPERATOR_CONTROL_PORT = 1;
   public static final int BUTTON_BOARD_PORT = 2;
 
+  //Center triangle is ID 15, Left triangle is ID 9
   public static final int BackRightDriveID = 5;
   public static final int BackRightSteerID = 6;
   public static final int BackLeftDriveID = 7;
@@ -33,8 +34,8 @@ public final class Constants {
   public static final int LeftPivotID = 10;
   public static final int RightPivotID = 11;
   //public static final int BeltID = 11;
-  public static final int LeftCannonID = 9;
-  public static final int RightCannonID = 15;
+  public static final int LeftCannonID = 15;
+  public static final int RightCannonID = 9;
   //public static final int IntakeID = 14;
   //public static final int ClimbID = 15;
 

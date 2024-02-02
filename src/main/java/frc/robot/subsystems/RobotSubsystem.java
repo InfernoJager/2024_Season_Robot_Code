@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.motor.PairedMotors;
 import frc.robot.Constants;
@@ -12,7 +13,7 @@ public class RobotSubsystem extends SubsystemBase {
 
     public RobotSubsystem() {
         
-        this.cannon = new PairedMotors(Constants.CANNON_MAIN, Constants.CANNON_SLAVE, false);
+        this.cannon = new PairedMotors(Constants.CANNON_MAIN, Constants.CANNON_SLAVE, true);
         this.pivot = new PairedMotors(Constants.PIVOT_MAIN, Constants.PIVOT_SLAVE, true);
 
     }
