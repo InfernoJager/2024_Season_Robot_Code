@@ -37,7 +37,10 @@ public class OperatorControls extends Command{
         final int stuckNoteOuttake = 8;
 
         /*Operator Xbox Controller*/
-        
+        if (controller.getAButtonPressed()) {
+            robot.Shoot(0.25, 3);
+        }
+
         /*Operator Button Board*/
         if (buttonBoard.getRawButtonPressed(ampPreset)) {
             //amp preset (118 or 119 degree rotation, low power)
