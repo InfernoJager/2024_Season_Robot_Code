@@ -12,8 +12,8 @@ public class RobotSubsystem extends SubsystemBase {
 
     public RobotSubsystem() {
         
-        this.cannon = new PairedMotors(Constants.CANNON_MAIN, Constants.CANNON_SLAVE);
-        this.pivot = new PairedMotors(Constants.PIVOT_MAIN, Constants.PIVOT_SLAVE);
+        this.cannon = new PairedMotors(Constants.CANNON_MAIN, Constants.CANNON_SLAVE, false);
+        this.pivot = new PairedMotors(Constants.PIVOT_MAIN, Constants.PIVOT_SLAVE, true);
 
     }
 

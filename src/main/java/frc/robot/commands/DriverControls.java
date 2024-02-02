@@ -30,7 +30,7 @@ public class DriverControls extends Command {
         
         boolean deadZone = (Math.abs(driverController.getLeftX()) <= 0.1 && Math.abs(driverController.getLeftY()) <= 0.1);
         if (!deadZone) {
-            leftJoystick = VectorR.fromCartesian(driverController.getLeftX()*0.2, driverController.getLeftY()*0.2);
+            leftJoystick = VectorR.fromCartesian(driverController.getLeftX()*0.5, driverController.getLeftY()*0.5);
         } else {
             leftJoystick = new VectorR();
         }

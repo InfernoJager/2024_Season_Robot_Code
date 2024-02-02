@@ -73,10 +73,6 @@ public class DriveSubsystem extends SubsystemBase {
   public void stop() {
     for (SwerveModule module : modules) {
       
-      module.stop();
-
-      Timer.delay(1);
-      
       module.stopDefensively();
 
     }
