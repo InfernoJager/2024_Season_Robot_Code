@@ -28,7 +28,6 @@ public class OperatorControls extends Command{
         
         //Presets
         final int ampPreset = 1;
-        final int speakerPreset = 2;
         final int intakePreset = 3;
         final int intake = 4;
         final int speakerShoot = 5;
@@ -38,33 +37,31 @@ public class OperatorControls extends Command{
 
         /*Operator Xbox Controller*/
         if (controller.getAButtonPressed()) {
-            robot.Shoot(0.25, 3);
+            robot.Shoot(0.05, 3);
         }
 
         /*Operator Button Board*/
         if (buttonBoard.getRawButtonPressed(ampPreset)) {
-            //amp preset (118 or 119 degree rotation, low power)
-        }
-        if (buttonBoard.getRawButtonPressed(speakerPreset)) {
-            //speaker preset (varying dgrees based on april tag, mid-full power based on range, no greater than 60, no less then 20)
+            robot.Pivot(0, 119, 0.05);
         }
         if (buttonBoard.getRawButtonPressed(intakePreset)) {
-            //intake preset (20 degrees, low power)
+            robot.Pivot(0, 20, 0.05);
         }
         if (buttonBoard.getRawButton(intake)) {
-            //intake note
+            robot.Intake(0.05, 1);
         }
         if (buttonBoard.getRawButton(speakerShoot)) {
-            //shoots note into speakers
+            robot.Pivot(0, 0, 0.05);
+            robot.Shoot(0.05, 1);
         }
         if (buttonBoard.getRawButton(ampShoot)) {
-            //shoots note into amp
+            robot.Shoot(0.05, 1);
         }
         if (buttonBoard.getRawButton(stuckNotePreset)) {
-            //get note unstuck preset (90 degrees)
+            robot.Pivot(0, 90, 0.05);
         }
         if (buttonBoard.getRawButton(stuckNoteOuttake)) {
-            //outtakes the intake area in the case of a note stuck under
+            robot.Intake(0.05, 1);
         }
             
     }

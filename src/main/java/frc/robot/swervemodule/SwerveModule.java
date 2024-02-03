@@ -34,7 +34,7 @@ public class SwerveModule {
     this.driveMotor = new CANSparkMax(info.DRIVE_ID, MotorType.kBrushless);
     this.orientationEncoder = angleMotor.getAnalog(SparkAnalogSensor.Mode.kAbsolute);
     this.defensiveAngleDeg = VectorR.fromCartesian(info.X, info.Y).getAngle();
-    angleMotor.setIdleMode(IdleMode.kBrake);
+    angleMotor.setIdleMode(IdleMode.kCoast);
     driveMotor.setIdleMode(IdleMode.kBrake);
     
   }

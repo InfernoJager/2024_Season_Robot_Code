@@ -31,26 +31,26 @@ public final class Constants {
   public static final int FrontRightSteerID = 2;
   public static final int FrontLeftDriveID = 3;
   public static final int FrontLeftSteerID = 4;
-  public static final int LeftPivotID = 10;
-  public static final int RightPivotID = 11;
-  //public static final int BeltID = 11;
+  public static final int LeftPivotID = 13;
+  public static final int RightPivotID = 14;
+  public static final int BeltID = 11;
   public static final int LeftCannonID = 15;
   public static final int RightCannonID = 9;
-  //public static final int IntakeID = 14;
-  //public static final int ClimbID = 15;
+  public static final int IntakeID = 12;
+  public static final int ClimbID = 10;
 
   // Swerve
-  public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(FrontRightDriveID, FrontRightSteerID, 3.316, 360, 53.149125, 1, -1);
-  public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(FrontLeftDriveID, FrontLeftSteerID, 3.339, 360, 262.675202, -1, -1);
-  public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(BackRightDriveID, BackRightSteerID, 3.341, 360, 106.836277, 1, 1);
-  public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(BackLeftDriveID, BackLeftSteerID, 3.316, 360, 126.046818, -1, 1);
+  public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(FrontRightDriveID, FrontRightSteerID, 3.316406, 360, 53.149125, 1, -1);
+  public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(FrontLeftDriveID, FrontLeftSteerID, 3.339844, 360, 262.675202, -1, -1);
+  public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(BackRightDriveID, BackRightSteerID, 3.328125, 360, 106.836277, 1, 1);
+  public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(BackLeftDriveID, BackLeftSteerID, 3.316406, 360, 126.046818, -1, 1);
 
   public static final MotorInfo CANNON_MAIN = new MotorInfo(LeftCannonID, 0, 0);
   public static final MotorInfo CANNON_SLAVE = new MotorInfo(RightCannonID, 0, 0);
   public static final MotorInfo PIVOT_MAIN = new MotorInfo(LeftPivotID, 0, 0);
   public static final MotorInfo PIVOT_SLAVE = new MotorInfo(RightPivotID, 0, 0);
-  //public static final MotorInfo FEEDER_BELT = new MotorInfo(BeltID, 0, 0);
-  //public static final MotorInfo INTAKE = new MotorInfo(IntakeID, 0, 0);
-  //public static final MotorInfo CLIMB_ARM = new MotorInfo(ClimbID, 0, 0);
+  public static final MotorInfo FEEDER_BELT = new MotorInfo(BeltID, 0, 0);
+  public static final MotorInfo INTAKE = new MotorInfo(IntakeID, 0, 0);
+  public static final MotorInfo CLIMB_ARM = new MotorInfo(ClimbID, 0, 0);
 
 }
