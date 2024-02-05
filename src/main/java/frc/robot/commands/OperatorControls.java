@@ -37,7 +37,7 @@ public class OperatorControls extends Command{
 
         /*Operator Xbox Controller*/
         if (controller.getAButtonPressed()) {
-            robot.Shoot(0.05, 3);
+            robot.Feed(0.05, false);
         }
 
         /*Operator Button Board*/
@@ -49,6 +49,7 @@ public class OperatorControls extends Command{
         }
         if (buttonBoard.getRawButton(intake)) {
             robot.Intake(0.05, 1);
+            robot.Feed(0.05, false);
         }
         if (buttonBoard.getRawButton(speakerShoot)) {
             robot.Pivot(0, 0, 0.05);

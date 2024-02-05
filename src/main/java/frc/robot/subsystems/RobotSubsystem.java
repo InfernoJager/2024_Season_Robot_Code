@@ -17,11 +17,11 @@ public class RobotSubsystem extends SubsystemBase {
 
     public RobotSubsystem() {
         
-        this.cannon = new PairedMotors(Constants.CANNON_MAIN, Constants.CANNON_SLAVE, true);
-        this.pivot = new PairedMotors(Constants.PIVOT_MAIN, Constants.PIVOT_SLAVE, true);
-        this.intake = new Motors(Constants.INTAKE, false);
-        this.climb = new Motors(Constants.CLIMB_ARM, false);
-        this.belt = new Motors(Constants.FEEDER_BELT, false);
+        this.cannon = new PairedMotors(Constants.CANNON_MAIN, Constants.CANNON_SLAVE, false, false);
+        this.pivot = new PairedMotors(Constants.PIVOT_MAIN, Constants.PIVOT_SLAVE, false, true);
+        this.intake = new Motors(Constants.INTAKE, false, false);
+        this.climb = new Motors(Constants.CLIMB_ARM, false, false);
+        this.belt = new Motors(Constants.FEEDER_BELT, false, false);
 
     }
 

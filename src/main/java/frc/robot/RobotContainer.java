@@ -46,5 +46,6 @@ public class RobotContainer {
 
   public void displayDebug() {
     drive.modules.debugSmartDashboard();
+    robot.pivot.debugSmartDashboard();
   }
 }

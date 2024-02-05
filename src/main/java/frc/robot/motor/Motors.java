@@ -4,9 +4,9 @@ public class Motors {
     
     public final Motor motor;
 
-    public Motors(MotorInfo motor, boolean encoded) {
+    public Motors(MotorInfo motor, boolean analog, boolean absolute) {
 
-        this.motor = new Motor(motor, encoded);
+        this.motor = new Motor(motor, analog, absolute);
 
     }
 

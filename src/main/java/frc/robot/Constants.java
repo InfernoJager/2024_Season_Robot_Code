@@ -31,13 +31,13 @@ public final class Constants {
   public static final int FrontRightSteerID = 2;
   public static final int FrontLeftDriveID = 3;
   public static final int FrontLeftSteerID = 4;
-  public static final int LeftPivotID = 13;
-  public static final int RightPivotID = 14;
-  public static final int BeltID = 11;
+  public static final int LeftPivotID = 10;
+  public static final int RightPivotID = 11;
+  public static final int BeltID = 14;
   public static final int LeftCannonID = 15;
   public static final int RightCannonID = 9;
   public static final int IntakeID = 12;
-  public static final int ClimbID = 10;
+  public static final int ClimbID = 13;
 
   // Swerve
   public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(FrontRightDriveID, FrontRightSteerID, 3.316406, 360, 53.149125, 1, -1);
