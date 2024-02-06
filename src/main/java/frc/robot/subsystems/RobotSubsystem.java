@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.motor.PairedMotors;
 import frc.robot.motor.Motors;
 import frc.robot.Constants;
+import edu.wpi.first.apriltag.AprilTag;
 
 public class RobotSubsystem extends SubsystemBase {
     
