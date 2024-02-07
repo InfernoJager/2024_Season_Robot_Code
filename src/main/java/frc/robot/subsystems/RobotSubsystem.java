@@ -15,6 +15,14 @@ public class RobotSubsystem extends SubsystemBase {
     public final Motors intake;
     public final Motors climb;
     public final Motors belt;
+    private Timer shootTimer = new Timer();
+    private Boolean shooting = false;
+    private Timer intakeTimer = new Timer();
+    private Boolean intaking = false;
+    private Timer climbTimer = new Timer();
+    private boolean climbing = false;
+    private boolean pivoting = false;
+    public boolean readyToShoot = false;
 
     public RobotSubsystem() {
         
@@ -26,35 +34,75 @@ public class RobotSubsystem extends SubsystemBase {
 
     }
 
-    public void Shoot(double speed, double length) {
+    public void Shoot(double speed) {
 
-        cannon.Spin(speed);
+        if (!shooting) {
+            shooting = true;
 
-        Timer.delay(length);
+            cannon.Spin(speed);
 
-        cannon.Spin(0);
+            shootTimer.reset();
+            shootTimer.start();
+        }
+
+    }
+
+    public void ShootStop(double length) {
+
+        if (shootTimer.get() > length) {
+            shooting = false;
+            readyToShoot = false;
+            
+            cannon.Spin(0);
+        }
+
+    }
+
+    public void PivotStart() {
+
+        if (!pivoting) {
+            pivoting = true;
+        }
 
     }
 
     public void Pivot(double currentAngle, double desiredAngle, double speed) {
 
-        boolean safezone = (desiredAngle > 20 || desiredAngle < 119);
+        if (pivoting) {
+            boolean safezone = (desiredAngle > 0 || desiredAngle < 119);
         
-        if (Math.abs(currentAngle - desiredAngle) > 1 && safezone) {
-            pivot.Spin(speed);
-        } else {
-            pivot.Spin(0);
+            if (Math.abs(currentAngle - desiredAngle) > 1 && safezone) {
+                pivot.Spin(speed);
+                readyToShoot = false;
+            } else {
+                pivot.Spin(0);
+                pivoting = false;
+                readyToShoot = true;
+            }
         }
 
     }
 
-    public void Intake(double speed, double length) {
+    public void Intake(double speed) {
 
-        intake.Spin(speed);
+        if (!intaking) {
+            intaking = true;
+            
+            intake.Spin(speed);
 
-        Timer.delay(length);
+            intakeTimer.reset();
+            intakeTimer.start();
+        }
 
-        intake.Spin(0);
+    }
+
+    public void IntakeStop(double length) {
+
+        if (intakeTimer.get() > length) {
+            intaking = false;
+
+            intake.Spin(0);
+        }
 
     }
 
@@ -64,19 +112,30 @@ public class RobotSubsystem extends SubsystemBase {
             belt.Spin(0);
         } else {
             belt.Spin(speed);
-            Timer.delay(3);
-            belt.Spin(0);
         }
 
     }
 
-    public void climb(double speed, double length) {
+    public void Climb(double speed) {
 
-        climb.Spin(speed);
+        if (!climbing) {
+            climbing = true;
+            
+            climb.Spin(speed);
 
-        Timer.delay(length);
+            climbTimer.reset();
+            climbTimer.start();
+        }
 
-        climb.Spin(0);
+    }
+
+    public void ClimbStop(double length) {
+
+        if (climbTimer.get() > length) {
+            climbing = false;
+
+            climb.Spin(0);
+        }
 
     }
     

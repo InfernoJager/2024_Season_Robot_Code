@@ -14,11 +14,13 @@ import frc.robot.commands.DriverControls;
 import frc.robot.commands.OperatorControls;
 import frc.robot.subsystems.RobotSubsystem;
 import frc.robot.motor.Motors;
+import frc.robot.subsystems.LimelightSubsystem;
 
 
 public class RobotContainer {
   DriveSubsystem drive = new DriveSubsystem();
   RobotSubsystem robot = new RobotSubsystem();
+  LimelightSubsystem limelight = new LimelightSubsystem();
   
   XboxController driverController = new XboxController(Constants.DRIVE_CONTROL_PORT);
   XboxController operatorController = new XboxController(Constants.OPERATOR_CONTROL_PORT);
@@ -47,5 +49,6 @@ public class RobotContainer {
   public void displayDebug() {
     drive.modules.debugSmartDashboard();
     robot.pivot.debugSmartDashboard();
+    limelight.LimelightWhere();
   }
 }

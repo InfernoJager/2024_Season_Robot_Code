@@ -36,9 +36,6 @@ public class OperatorControls extends Command{
         final int stuckNoteOuttake = 8;
 
         /*Operator Xbox Controller*/
-        if (controller.getAButtonPressed()) {
-            robot.Feed(0.05, false);
-        }
 
         /*Operator Button Board*/
         if (buttonBoard.getRawButtonPressed(ampPreset)) {
@@ -48,21 +45,29 @@ public class OperatorControls extends Command{
             robot.Pivot(0, 20, 0.05);
         }
         if (buttonBoard.getRawButton(intake)) {
-            robot.Intake(0.05, 1);
+            robot.Intake(0.05);
             robot.Feed(0.05, false);
         }
         if (buttonBoard.getRawButton(speakerShoot)) {
-            robot.Pivot(0, 0, 0.05);
-            robot.Shoot(0.05, 1);
+            robot.PivotStart();
         }
         if (buttonBoard.getRawButton(ampShoot)) {
-            robot.Shoot(0.05, 1);
+            robot.Shoot(0.15);
         }
         if (buttonBoard.getRawButton(stuckNotePreset)) {
             robot.Pivot(0, 90, 0.05);
         }
         if (buttonBoard.getRawButton(stuckNoteOuttake)) {
-            robot.Intake(0.05, 1);
+            robot.Intake(-0.05);
+        }
+        
+        robot.ShootStop(3);
+        robot.IntakeStop(3);
+        robot.ClimbStop(3);
+        robot.Pivot(robot.pivot.mainMotor.getAbsoluteRawAngle(), 0, 0.05);
+        
+        if (robot.readyToShoot) {
+            robot.Shoot(0.5);
         }
             
     }
