@@ -29,6 +29,7 @@ public class LimelightSubsystem {
         // SmartDashboard.putNumber("LimelightArea", area);
 
         params = NetworkTableInstance.getDefault().getTable("limelight").getEntry("targetpose_robotspace").getDoubleArray(new double[6]);
+        /*39.37 inches in a meter, but limelight calibration required 32*/
         double meterToInch = 32;
         double x = params[0]*meterToInch;
         double y = params[1]*meterToInch;

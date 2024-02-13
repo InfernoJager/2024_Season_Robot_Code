@@ -23,6 +23,8 @@ public class RobotSubsystem extends SubsystemBase {
     private boolean climbing = false;
     private boolean pivoting = false;
     public boolean readyToShoot = false;
+    private double desiredAngle = 20;
+    private double currentAngle;
 
     public RobotSubsystem() {
         
@@ -36,12 +38,11 @@ public class RobotSubsystem extends SubsystemBase {
 
     public void Shoot(double speed) {
 
-        if (!shooting) {
+        if (!shooting && !intaking && GetNearDesiredAngle(0, 1)) {
             shooting = true;
 
             cannon.Spin(speed);
 
-            shootTimer.reset();
             shootTimer.start();
         }
 
@@ -52,9 +53,17 @@ public class RobotSubsystem extends SubsystemBase {
         if (shootTimer.get() > length) {
             shooting = false;
             readyToShoot = false;
+
+            shootTimer.stop();
             
             cannon.Spin(0);
         }
+
+    }
+
+    public boolean IsShootFinished(double length) {
+
+        return (shootTimer.get() > length);
 
     }
 
@@ -66,12 +75,30 @@ public class RobotSubsystem extends SubsystemBase {
 
     }
 
-    public void Pivot(double currentAngle, double desiredAngle, double speed) {
+    public void SetDesiredAngle(double desiredAngle) {
+
+        this.desiredAngle = desiredAngle;
+
+    }
+
+    public double GetDesiredAngle() {
+
+        return desiredAngle;
+
+    }
+
+    public boolean GetNearDesiredAngle(double targetAngle, double deadzone) {
+
+        return (desiredAngle == targetAngle && desiredAngle > currentAngle - deadzone && desiredAngle < currentAngle + deadzone);
+
+    }
+
+    public void Pivot(double currentAngle, double speed) {
 
         if (pivoting) {
             boolean safezone = (desiredAngle > 0 || desiredAngle < 119);
         
-            if (Math.abs(currentAngle - desiredAngle) > 1 && safezone) {
+            if (Math.abs(currentAngle - desiredAngle) > 5 && safezone) {
                 pivot.Spin(speed);
                 readyToShoot = false;
             } else {
@@ -79,13 +106,16 @@ public class RobotSubsystem extends SubsystemBase {
                 pivoting = false;
                 readyToShoot = true;
             }
+
+            this.currentAngle = currentAngle;
+
         }
 
     }
 
     public void Intake(double speed) {
 
-        if (!intaking) {
+        if (!intaking && !shooting && GetNearDesiredAngle(20, 1)) {
             intaking = true;
             
             intake.Spin(speed);
@@ -101,18 +131,28 @@ public class RobotSubsystem extends SubsystemBase {
         if (intakeTimer.get() > length) {
             intaking = false;
 
+            intakeTimer.stop();
+
             intake.Spin(0);
         }
 
     }
 
-    public void Feed(double speed, boolean note) {
+    public boolean IsIntakeFinished(double length) {
 
-        if (note) {
-            belt.Spin(0);
-        } else {
-            belt.Spin(speed);
-        }
+        return (intakeTimer.get() > length);
+
+    }
+
+    public void Feed(double speed) {
+
+        belt.Spin(speed);
+
+    }
+
+    public void FeedStop() {
+
+        belt.Spin(0);
 
     }
 
@@ -136,6 +176,12 @@ public class RobotSubsystem extends SubsystemBase {
 
             climb.Spin(0);
         }
+
+    }
+
+    public void debugSmartDashboard() {
+
+        SmartDashboard.putNumber("desiredAngle", desiredAngle);
 
     }
     
