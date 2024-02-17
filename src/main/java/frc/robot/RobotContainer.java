@@ -31,7 +31,7 @@ public class RobotContainer {
   Motors encodeTest;
 
   public RobotContainer() {
-    drive.setDefaultCommand(new DriverControls(drive, driverController));
+    drive.setDefaultCommand(new DriverControls(drive, robot, driverController));
     robot.setDefaultCommand(new OperatorControls(robot, operatorController, buttonBoard));
     configureBindings();
   }

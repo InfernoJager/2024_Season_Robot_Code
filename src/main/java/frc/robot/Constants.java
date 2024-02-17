@@ -34,9 +34,9 @@ public final class Constants {
   public static final int LeftPivotID = 10;
   public static final int RightPivotID = 11;
   public static final int BeltID = 14;
-  public static final int LeftCannonID = 15;
+  public static final int LeftCannonID = 12;
   public static final int RightCannonID = 9;
-  public static final int IntakeID = 12;
+  public static final int IntakeID = 15;
   public static final int ClimbID = 13;
 
   // Swerve

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -7,6 +8,7 @@ import frc.robot.motor.PairedMotors;
 import frc.robot.motor.Motors;
 import frc.robot.Constants;
 import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.wpilibj.AnalogInput;
 
 public class RobotSubsystem extends SubsystemBase {
     
@@ -15,16 +17,23 @@ public class RobotSubsystem extends SubsystemBase {
     public final Motors intake;
     public final Motors climb;
     public final Motors belt;
+    private final AnalogInput sensor;
     private Timer shootTimer = new Timer();
-    private Boolean shooting = false;
-    private Timer intakeTimer = new Timer();
-    private Boolean intaking = false;
     private Timer climbTimer = new Timer();
     private boolean climbing = false;
     private boolean pivoting = false;
     public boolean readyToShoot = false;
     private double desiredAngle = 20;
     private double currentAngle;
+    private robotState currentState = robotState.idle;
+    private robotState queuedState = robotState.idle;
+    //private sideState currentSideState = sideState.idle;
+    public enum robotState{
+        idle, speakerShooting, ampShooting, intakingPivot, intaking, climbing;
+    }
+    // public enum sideState{
+    //     idle, pivoting, feeding;
+    // }
 
     public RobotSubsystem() {
         
@@ -34,16 +43,39 @@ public class RobotSubsystem extends SubsystemBase {
         this.climb = new Motors(Constants.CLIMB_ARM, false, false);
         this.belt = new Motors(Constants.FEEDER_BELT, false, false);
 
+        this.sensor = new AnalogInput(0);
+
     }
 
-    public void Shoot(double speed) {
+    public void SetQueuedState(robotState state) {
 
-        if (!shooting && !intaking && GetNearDesiredAngle(0, 1)) {
-            shooting = true;
+        queuedState = state;
+
+    }
+
+    private void QueuedState() {
+
+        if (currentState == robotState.idle) {
+            currentState = queuedState;
+        }
+
+    }
+
+    public void Shoot(double speed, robotState state) {
+
+        if (currentState != robotState.speakerShooting && currentState != robotState.ampShooting && GetNearDesiredAngle(0, 1)) {
+            currentState = state;
 
             cannon.Spin(speed);
 
+            shootTimer.reset();
             shootTimer.start();
+        }
+
+        if (currentState == robotState.speakerShooting) {
+            Feed(-0.05);
+
+            Feed(0.05);
         }
 
     }
@@ -51,7 +83,7 @@ public class RobotSubsystem extends SubsystemBase {
     public void ShootStop(double length) {
 
         if (shootTimer.get() > length) {
-            shooting = false;
+            currentState = robotState.idle;
             readyToShoot = false;
 
             shootTimer.stop();
@@ -61,11 +93,11 @@ public class RobotSubsystem extends SubsystemBase {
 
     }
 
-    public boolean IsShootFinished(double length) {
+    // public boolean ShootFinished(double length) {
 
-        return (shootTimer.get() > length);
+    //     return (shootTimer.get() > length);
 
-    }
+    // }
 
     public void PivotStart() {
 
@@ -89,7 +121,7 @@ public class RobotSubsystem extends SubsystemBase {
 
     public boolean GetNearDesiredAngle(double targetAngle, double deadzone) {
 
-        return (desiredAngle == targetAngle && desiredAngle > currentAngle - deadzone && desiredAngle < currentAngle + deadzone);
+        return (GetDesiredAngle() == targetAngle && GetDesiredAngle() > currentAngle - deadzone && GetDesiredAngle() < currentAngle + deadzone);
 
     }
 
@@ -114,33 +146,28 @@ public class RobotSubsystem extends SubsystemBase {
     }
 
     public void Intake(double speed) {
-
-        if (!intaking && !shooting && GetNearDesiredAngle(20, 1)) {
-            intaking = true;
-            
+        
+        QueuedState();
+        
+        if (currentState == robotState.intakingPivot) {
+            PivotStart();
+            Pivot(pivot.mainMotor.getAbsoluteRawAngle(), 0.05);
+        }
+        if (GetNearDesiredAngle(20, 5) && currentState == robotState.intakingPivot || currentState == robotState.intaking) {
             intake.Spin(speed);
-
-            intakeTimer.reset();
-            intakeTimer.start();
+            currentState = robotState.intaking;
         }
-
-    }
-
-    public void IntakeStop(double length) {
-
-        if (intakeTimer.get() > length) {
-            intaking = false;
-
-            intakeTimer.stop();
-
+        if (currentState == robotState.intaking) {
+            Feed(0.05);
+        }
+        if (isNoteIn(sensor)) {
+            Feed(0);
             intake.Spin(0);
+            SetQueuedState(robotState.idle);
+            currentState = robotState.idle;
         }
 
-    }
-
-    public boolean IsIntakeFinished(double length) {
-
-        return (intakeTimer.get() > length);
+        System.out.println(currentState);
 
     }
 
@@ -150,11 +177,13 @@ public class RobotSubsystem extends SubsystemBase {
 
     }
 
-    public void FeedStop() {
+    // public void FeedStop(boolean note) {
 
-        belt.Spin(0);
-
-    }
+    //     if (note) {
+    //         belt.Spin(0);
+    //     }
+        
+    // }
 
     public void Climb(double speed) {
 
@@ -179,9 +208,30 @@ public class RobotSubsystem extends SubsystemBase {
 
     }
 
+    private boolean isNoteIn(AnalogInput sensor) {
+
+        boolean isReady = false;
+
+        isReady = sensor.getVoltage() < 0.01;
+
+        return isReady;
+
+    }
+
+    private boolean isNoteOut(AnalogInput sensor) {
+
+        boolean isReady = true;
+
+        isReady = sensor.getVoltage() > 0.1;
+
+        return isReady;
+
+    }
+
     public void debugSmartDashboard() {
 
         SmartDashboard.putNumber("desiredAngle", desiredAngle);
+        SmartDashboard.putNumber("sensor", sensor.getVoltage());
 
     }
     
