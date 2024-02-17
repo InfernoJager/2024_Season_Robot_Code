@@ -29,39 +29,37 @@ public class OperatorControls extends Command{
     public void execute() {
 
         //Presets
-        boolean isShootReady = false;
-        final int ampPreset = 1;
-        final int speakerShoot = 5;
-        final int ampShoot = 6;
+        final int speakerShoot = 4;
+        final int safeAngle = 6;
+        final int ampShoot = 8;
 
         /*Operator Xbox Controller*/
 
         /*Operator Button Board*/
-        if (buttonBoard.getRawButtonPressed(ampPreset)) {
-            SmartDashboard.putString("key", "ampPreset");
-            robot.PivotStart();
-            robot.SetDesiredAngle(119);
-        }
         if (buttonBoard.getRawButtonPressed(speakerShoot)) {
-            SmartDashboard.putString("key", "speakerShoot");
-            robot.Feed(0.05);
-            robot.PivotStart();
-            robot.SetDesiredAngle(0);
+            SmartDashboard.putString("buttonPressed", "speakerShoot");
+            robot.SetQueuedState(robotState.speakerShootingPrep);
+            robot.SetDesiredAngle(30);
+            robot.SetPivotSpeed(0.05);
+            robot.SetShootSpeed(0.05);
+        }
+        if (buttonBoard.getRawButtonPressed(safeAngle)) {
+            SmartDashboard.putString("buttonPressed", "safeAngle");
+            robot.SetDesiredAngle(20);
+            robot.SetPivotSpeed(0.05);
         }
         if (buttonBoard.getRawButtonPressed(ampShoot)) {
-            SmartDashboard.putString("key", "ampShoot");
-            robot.Feed(0.05);
-            robot.Shoot(0.15, robotState.ampShooting);
+            SmartDashboard.putString("buttonPressed", "ampShoot");
+            robot.SetQueuedState(robotState.ampShooting);
+            robot.SetDesiredAngle(119);
+            robot.SetPivotSpeed(0.05);
+            robot.SetShootSpeed(0.05);
         }
 
-        robot.ShootStop(3);
         robot.ClimbStop(3);
-        robot.Pivot(robot.pivot.mainMotor.getAbsoluteRawAngle(), 0.05);
+        robot.Shoot();
+        robot.Pivot();
 
-        if (robot.readyToShoot) {
-            robot.Shoot(0.5, robotState.speakerShooting);
-        }
-            
     }
 
     @Override
