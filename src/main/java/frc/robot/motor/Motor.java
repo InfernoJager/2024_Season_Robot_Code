@@ -66,4 +66,12 @@ public class Motor {
 
     }
 
+    public double getAbsoluteAngle() {
+
+        double angle = absoluteEncoder.getPosition() - info.REFERENCE_ANGLE;
+
+        return angle;
+
+    }
+
 }

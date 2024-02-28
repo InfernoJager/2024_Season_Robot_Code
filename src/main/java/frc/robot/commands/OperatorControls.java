@@ -39,24 +39,24 @@ public class OperatorControls extends Command{
         if (buttonBoard.getRawButtonPressed(speakerShoot)) {
             SmartDashboard.putString("buttonPressed", "speakerShoot");
             robot.SetQueuedState(robotState.speakerShootingPrep);
-            robot.SetDesiredAngle(30);
-            robot.SetPivotSpeed(0.05);
-            robot.SetShootSpeed(0.05);
+            robot.SetDesiredAngle(10);
+            robot.SetPivotSpeed(-0.3);
+            robot.SetShootSpeed(-1);
         }
         if (buttonBoard.getRawButtonPressed(safeAngle)) {
             SmartDashboard.putString("buttonPressed", "safeAngle");
-            robot.SetDesiredAngle(20);
-            robot.SetPivotSpeed(0.05);
+            robot.SetDesiredAngle(13);
+            //13 and 0 degrees interchangable based on field
+            robot.SetPivotSpeed(-0.3);
         }
         if (buttonBoard.getRawButtonPressed(ampShoot)) {
             SmartDashboard.putString("buttonPressed", "ampShoot");
             robot.SetQueuedState(robotState.ampShooting);
-            robot.SetDesiredAngle(119);
-            robot.SetPivotSpeed(0.05);
-            robot.SetShootSpeed(0.05);
+            robot.SetDesiredAngle(98);
+            robot.SetPivotSpeed(-0.3);
+            robot.SetShootSpeed(0.25);
         }
 
-        robot.ClimbStop(3);
         robot.Shoot();
         robot.Pivot();
 

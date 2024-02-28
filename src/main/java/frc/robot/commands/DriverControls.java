@@ -58,8 +58,9 @@ public class DriverControls extends Command {
             drive.stop();
         }
         if (driverController.getBButton()) {
-            robot.SetIntakeSpeed(0.05);
-            robot.SetDesiredAngle(20);
+            robot.SetIntakeSpeed(0.50);
+            robot.SetPivotSpeed(-0.3);
+            robot.SetDesiredAngle(1);
             robot.SetQueuedState(robotState.intakingPivot);
         }
 

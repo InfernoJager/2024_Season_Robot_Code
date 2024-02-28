@@ -51,5 +51,6 @@ public class RobotContainer {
     robot.pivot.debugSmartDashboard();
     robot.debugSmartDashboard();
     limelight.LimelightWhere();
+    drive.modules.encoderVoltage();
   }
 }

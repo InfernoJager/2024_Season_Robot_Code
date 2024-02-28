@@ -7,8 +7,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.motor.PairedMotors;
 import frc.robot.motor.Motors;
 import frc.robot.Constants;
+import frc.robot.commands.DriverControls;
+
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.hal.HAL.SimPeriodicAfterCallback;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogInput;
 
 public class RobotSubsystem extends SubsystemBase {
@@ -28,24 +31,49 @@ public class RobotSubsystem extends SubsystemBase {
     private double desiredAngle = 20;
     private double currentAngle;
     private double pivotspeed;
+    private PIDController pivotpid;
     private double shootspeed;
     private double intakespeed;
     private double feedspeed;
     private robotState currentState = robotState.idle;
     private robotState queuedState = robotState.idle;
     public enum robotState{
-        idle, shootPivot, speakerShootingPrep, speakerShootingFire, ampShooting, shootFinished, intakingPivot, intaking, climbing, readyToShoot;
+        idle, shootPivot, speakerShootingPrep, speakerShootingFire, ampShooting, shootFinished, intakingPivot, intaking, climbingprep, climbing, readyToShoot;
     }
+    private double pidCalcValue;
+    private double pidSetValue;
 
     public RobotSubsystem() {
         
         this.cannon = new PairedMotors(Constants.CANNON_MAIN, Constants.CANNON_SLAVE, false, false);
         this.pivot = new PairedMotors(Constants.PIVOT_MAIN, Constants.PIVOT_SLAVE, false, true);
+        this.pivot.mainMotor.absoluteEncoder.setInverted(true);
+        // Test 0.02 for kd
+        this.pivotpid = new PIDController(0.03, 0.000000001, 0.1);
+        pivotpid.enableContinuousInput(0, 360);
         this.intake = new Motors(Constants.INTAKE, false, false);
         this.climb = new Motors(Constants.CLIMB_ARM, false, false);
         this.belt = new Motors(Constants.FEEDER_BELT, false, false);
 
         this.sensor = new AnalogInput(0);
+
+    }
+
+    public void resetStates() {
+
+        queuedState = robotState.idle;
+        currentState = robotState.idle;
+
+    }
+
+    public void resetMotors() {
+
+        climb.Spin(0);
+        pivot.Spin(0);
+        belt.Spin(0);
+        intake.Spin(0);
+        cannon.Spin(0);
+
 
     }
 
@@ -95,7 +123,7 @@ public class RobotSubsystem extends SubsystemBase {
         }
         if (currentState == robotState.ampShooting) {
 
-            Feed(0.05);
+            Feed(shootspeed);
             cannon.Spin(shootspeed);
             if (isNoteOut(sensor)) {
                 shootTimer.start();
@@ -105,16 +133,16 @@ public class RobotSubsystem extends SubsystemBase {
         if (currentState == robotState.speakerShootingPrep) {
 
             cannon.Spin(shootspeed);
-            Feed(-0.05);
+            Feed(shootspeed);
             if (isNoteOut(sensor)) {
-                Feed(0);
-                currentState = robotState.speakerShootingFire;
+                //Feed(0);
+                currentState = robotState.shootFinished;
             }
 
         }
         if (currentState == robotState.speakerShootingFire) {
 
-            Feed(0.05);
+            Feed(shootspeed);
             feedTimer.start();
             if (feedTimer.get() > 1 && isNoteOut(sensor)) {
                 currentState = robotState.shootFinished;
@@ -168,10 +196,18 @@ public class RobotSubsystem extends SubsystemBase {
         this.currentAngle = pivot.mainMotor.getAbsoluteRawAngle();
 
         if (pivoting) {
-            boolean safezone = (desiredAngle > 0 || desiredAngle < 119);
-        
-            if (Math.abs(currentAngle - desiredAngle) > 5 && safezone) {
-                pivot.Spin(pivotspeed);
+            boolean safezone = (currentAngle > 0 && currentAngle < 100);
+            pidCalcValue = pivotpid.calculate(currentAngle, desiredAngle);
+
+            if (safezone) {
+                if (pivotpid.calculate(currentAngle, desiredAngle) > 0) {
+                    pidSetValue = -Math.min(pivotpid.calculate(currentAngle, desiredAngle), pivotspeed);
+                    pivot.Spin(pidSetValue);
+                }
+                if (pivotpid.calculate(currentAngle, desiredAngle) < 0) {
+                    pidSetValue = -Math.max(pivotpid.calculate(currentAngle, desiredAngle), -pivotspeed);
+                    pivot.Spin(pidSetValue);
+                }
                 readyToShoot = false;
             } else {
                 pivot.Spin(0);
@@ -192,17 +228,21 @@ public class RobotSubsystem extends SubsystemBase {
             PivotStart();
             Pivot();
         }
-        if (GetNearDesiredAngle(20, 5) && (currentState == robotState.intakingPivot || currentState == robotState.intaking)) {
-            intake.Spin(intakespeed);
+        if (GetNearDesiredAngle(1, 1) && currentState == robotState.intakingPivot) {
+            SetPivotSpeed(0);
             currentState = robotState.intaking;
         }
         if (currentState == robotState.intaking) {
-            Feed(0.05);
+            intake.Spin(intakespeed);
+            Feed(-intakespeed);
         }
-        if (isNoteIn(sensor)) {
-            Feed(0);
-            intake.Spin(0);
-            currentState = robotState.readyToShoot;
+        if (currentState == robotState.intaking) {
+            if (isNoteIn(sensor)) {
+                Feed(0);
+                intake.Spin(0);
+                resetStates();
+                currentState = robotState.readyToShoot;
+            }
         }
 
     }
@@ -215,24 +255,7 @@ public class RobotSubsystem extends SubsystemBase {
 
     public void Climb(double speed) {
 
-        if (!climbing) {
-            climbing = true;
-            
-            climb.Spin(speed);
-
-            climbTimer.reset();
-            climbTimer.start();
-        }
-
-    }
-
-    public void ClimbStop(double length) {
-
-        if (climbTimer.get() > length) {
-            climbing = false;
-
-            climb.Spin(0);
-        }
+        
 
     }
 
@@ -262,6 +285,9 @@ public class RobotSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("sensor", sensor.getVoltage());
         SmartDashboard.putString("currentstate", currentState.toString());
         SmartDashboard.putString("queuedstate", queuedState.toString());
+        SmartDashboard.putNumber("Test", climb.motor.motor.getEncoder().getPosition());
+        SmartDashboard.putNumber("Pid", pidCalcValue);
+        SmartDashboard.putNumber("pidval", pidSetValue);
 
     }
     

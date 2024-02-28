@@ -8,6 +8,7 @@ public class Motors {
 
         this.motor = new Motor(motor, analog, absolute);
 
+
     }
 
     public void Spin(double speed) {
