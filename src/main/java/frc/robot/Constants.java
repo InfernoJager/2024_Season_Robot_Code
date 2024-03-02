@@ -41,10 +41,10 @@ public final class Constants {
   public static final double PivotOffset = 112.39;
 
   // Swerve
-  public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(FrontRightDriveID, FrontRightSteerID, 3.343750, 360, 8.75, 1, 1);
+  public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(FrontRightDriveID, FrontRightSteerID, 3.343750, 360, 8.75, -1, -1);
   public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(FrontLeftDriveID, FrontLeftSteerID, 3.363281, 360, 245, -1, 1);
   public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(BackRightDriveID, BackRightSteerID, 3.406250, 360, 336.75, 1, -1);
-  public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(BackLeftDriveID, BackLeftSteerID, 3.339844, 360, 177.89, -1, -1);
+  public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(BackLeftDriveID, BackLeftSteerID, 3.484375, 360, 174.75, 1, 1);
 
   // Robot
   public static final MotorInfo CANNON_MAIN = new MotorInfo(MainCannonID, 0, 0);

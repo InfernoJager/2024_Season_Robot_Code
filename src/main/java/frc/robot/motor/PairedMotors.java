@@ -23,7 +23,7 @@ public class PairedMotors {
 
     public void debugSmartDashboard() {
         
-        SmartDashboard.putNumber("Pivot", mainMotor.getAbsoluteRawAngle());
+        SmartDashboard.putNumber("Pivot", mainMotor.getAbsoluteRawAngle() + 20);
         SmartDashboard.putNumber("PivotConversin", mainMotor.absoluteEncoder.getPositionConversionFactor());
 
     }

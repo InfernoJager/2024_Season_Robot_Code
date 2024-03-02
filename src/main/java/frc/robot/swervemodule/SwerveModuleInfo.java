@@ -22,7 +22,7 @@ public class SwerveModuleInfo {
         ABS_ENCODER_VALUE_WHEN_STRAIGHT = abs_encoder_value_when_wheel_straight;
         X = x;
         Y = y;
-        MODULE_TANGENT_DEG = VectorR.fromCartesian(x, y).getAngle() + 90;
+        MODULE_TANGENT_DEG = VectorR.fromCartesian(x, y).getAngle() - 90;
 
     }
 

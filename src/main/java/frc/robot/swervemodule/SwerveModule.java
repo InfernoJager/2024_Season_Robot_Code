@@ -121,8 +121,12 @@ public class SwerveModule {
   }
 
   public void stop() {
-    angleMotor.set(0);
-    driveMotor.set(0);
+    if (driveMotor.get() != 0) {
+      driveMotor.set(0);
+    }
+    if (angleMotor.get() != 0) {
+      angleMotor.set(0);
+    }
   }
 
   public void stopDefensively() {

@@ -42,7 +42,7 @@ public class DriveSubsystem extends SubsystemBase {
    * NOTE: the speed of any wheel can reach a maximum of turn + |velocity|
    */
   public void move(VectorR directionalSpeed, double turnSpeed, boolean aPressed, boolean startPressed) {
-
+    
     double speedMultiplier;
 
     if (startPressed && aPressed) {
@@ -70,9 +70,10 @@ public class DriveSubsystem extends SubsystemBase {
   }
   
   public void stop() {
+
     for (SwerveModule module : modules) {
       
-      module.stopDefensively();
+      module.stop();
 
     }
 

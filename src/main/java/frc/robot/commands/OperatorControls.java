@@ -29,8 +29,11 @@ public class OperatorControls extends Command{
     public void execute() {
 
         //Presets
+        final int climbUp = 2;
+        final int climbHigh = 3;
         final int speakerShoot = 4;
-        final int safeAngle = 6;
+        final int cancelOperation = 6;
+        final int climbLow = 7;
         final int ampShoot = 8;
 
         /*Operator Xbox Controller*/
@@ -38,23 +41,25 @@ public class OperatorControls extends Command{
         /*Operator Button Board*/
         if (buttonBoard.getRawButtonPressed(speakerShoot)) {
             SmartDashboard.putString("buttonPressed", "speakerShoot");
-            robot.SetQueuedState(robotState.speakerShootingPrep);
-            robot.SetDesiredAngle(10);
+            robot.SetQueuedState(robotState.speakerShooting);
+            robot.SetDesiredAngle(61);
             robot.SetPivotSpeed(-0.3);
             robot.SetShootSpeed(-1);
         }
-        if (buttonBoard.getRawButtonPressed(safeAngle)) {
+        if (buttonBoard.getRawButtonPressed(cancelOperation)) {
             SmartDashboard.putString("buttonPressed", "safeAngle");
-            robot.SetDesiredAngle(13);
-            //13 and 0 degrees interchangable based on field
+            robot.resetMotors();
+            robot.revertStates();
+            robot.SetDesiredAngle(33);
             robot.SetPivotSpeed(-0.3);
+            robot.PivotStart();
         }
         if (buttonBoard.getRawButtonPressed(ampShoot)) {
             SmartDashboard.putString("buttonPressed", "ampShoot");
             robot.SetQueuedState(robotState.ampShooting);
-            robot.SetDesiredAngle(98);
+            robot.SetDesiredAngle(117);
             robot.SetPivotSpeed(-0.3);
-            robot.SetShootSpeed(0.25);
+            robot.SetShootSpeed(-0.12);
         }
 
         robot.Shoot();

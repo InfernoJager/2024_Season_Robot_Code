@@ -3,8 +3,11 @@ package frc.robot.motor;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkAnalogSensor;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkRelativeEncoder.Type;
+
 import edu.wpi.first.math.controller.PIDController;
 
 public class Motor {
@@ -12,6 +15,7 @@ public class Motor {
     public final CANSparkMax motor;
     public SparkAnalogSensor analogEncoder;
     public SparkAbsoluteEncoder absoluteEncoder;
+    public RelativeEncoder inBuiltEncoder;
     private double orientation = 0.0;
     public final MotorInfo info;
 
@@ -19,6 +23,7 @@ public class Motor {
 
         this.info = info;
         this.motor = new CANSparkMax(info.ID, MotorType.kBrushless);
+        this.inBuiltEncoder = motor.getEncoder();
         motor.setIdleMode(IdleMode.kBrake);
 
         if (analog) {

@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.motor.PairedMotors;
@@ -22,9 +21,6 @@ public class RobotSubsystem extends SubsystemBase {
     public final Motors climb;
     public final Motors belt;
     private final AnalogInput sensor;
-    private Timer shootTimer = new Timer();
-    private Timer climbTimer = new Timer();
-    private Timer feedTimer = new Timer();
     private boolean climbing = false;
     private boolean pivoting = false;
     public boolean readyToShoot = false;
@@ -38,10 +34,13 @@ public class RobotSubsystem extends SubsystemBase {
     private robotState currentState = robotState.idle;
     private robotState queuedState = robotState.idle;
     public enum robotState{
-        idle, shootPivot, speakerShootingPrep, speakerShootingFire, ampShooting, shootFinished, intakingPivot, intaking, climbingprep, climbing, readyToShoot;
+        idle, shootPivot, speakerShooting, ampShooting, ampShootingFinal, shooting, shootFinished, intakingPivot, intaking, climbingprep, climbing, readyToShoot, noteRetractingStart, noteRetracting;
     }
     private double pidCalcValue;
     private double pidSetValue;
+    private double pidFinalValue;
+    private double wantedFeed;
+    private double wantedShoot;
 
     public RobotSubsystem() {
         
@@ -49,8 +48,9 @@ public class RobotSubsystem extends SubsystemBase {
         this.pivot = new PairedMotors(Constants.PIVOT_MAIN, Constants.PIVOT_SLAVE, false, true);
         this.pivot.mainMotor.absoluteEncoder.setInverted(true);
         // Test 0.02 for kd
-        this.pivotpid = new PIDController(0.03, 0.000000001, 0.1);
+        this.pivotpid = new PIDController(0.02, 0, 0.001);
         pivotpid.enableContinuousInput(0, 360);
+        pivotpid.setTolerance(1);
         this.intake = new Motors(Constants.INTAKE, false, false);
         this.climb = new Motors(Constants.CLIMB_ARM, false, false);
         this.belt = new Motors(Constants.FEEDER_BELT, false, false);
@@ -63,6 +63,19 @@ public class RobotSubsystem extends SubsystemBase {
 
         queuedState = robotState.idle;
         currentState = robotState.idle;
+
+    }
+
+    public void revertStates() {
+
+        if (queuedState == robotState.intakingPivot) {
+            queuedState = robotState.idle;
+            currentState = robotState.idle;
+        }
+        if (queuedState == robotState.ampShooting || queuedState == robotState.speakerShooting) {
+            queuedState = robotState.readyToShoot;
+            currentState = robotState.readyToShoot;
+        }
 
     }
 
@@ -107,57 +120,86 @@ public class RobotSubsystem extends SubsystemBase {
 
     }
 
+    public void NoteBack() {
+
+        double currentFeed = Math.abs(belt.motor.inBuiltEncoder.getPosition());
+
+        if (currentState == robotState.noteRetractingStart) {
+            Feed(0.1);
+        }
+        if (isNoteOut(sensor) && currentState == robotState.noteRetractingStart) {
+            wantedFeed = currentFeed - 1.75;
+            currentState = robotState.noteRetracting;
+        }
+        if (currentState == robotState.noteRetracting && currentFeed <= wantedFeed) {
+            Feed(0);
+            currentState = robotState.readyToShoot;
+        }
+
+    }
+
     public void Shoot() {
         
-        if (currentState == robotState.readyToShoot && (queuedState == robotState.ampShooting || queuedState == robotState.speakerShootingPrep)) {
+        double target = 0;
+        double currentShoot = cannon.mainMotor.inBuiltEncoder.getPosition();
+
+        if (currentState == robotState.readyToShoot && (queuedState == robotState.ampShooting || queuedState == robotState.speakerShooting)) {
             currentState = robotState.shootPivot;
-            shootTimer.reset();
-            feedTimer.reset();
         }
         if (currentState == robotState.shootPivot) {
             PivotStart();
             Pivot();
         }
-        if (currentState == robotState.shootPivot && GetNearDesiredAngle(GetDesiredAngle(), 5)) {
+        if (queuedState == robotState.ampShooting) {
+            target = 117;
+        }
+        if (queuedState == robotState.speakerShooting) {
+            target = 61;
+        }
+        if (currentState == robotState.shootPivot && GetNearDesiredAngle(target, 0.75) && Math.abs(pidFinalValue) < 0.05) {
             currentState = queuedState;
         }
         if (currentState == robotState.ampShooting) {
 
-            Feed(shootspeed);
+            Feed(-0.5);
             cannon.Spin(shootspeed);
-            if (isNoteOut(sensor)) {
-                shootTimer.start();
-            }
 
         }
-        if (currentState == robotState.speakerShootingPrep) {
+        if (currentState == robotState.speakerShooting) {
 
             cannon.Spin(shootspeed);
             Feed(shootspeed);
-            if (isNoteOut(sensor)) {
-                //Feed(0);
+
+        }
+        if (currentState == robotState.speakerShooting || currentState == robotState.ampShooting) {
+            
+            if (isNoteIn(sensor)) {
+                currentState = robotState.shooting;
+            }
+            
+        }
+        if (currentState == robotState.shooting) {
+
+            if (isNoteOut(sensor) && queuedState == robotState.speakerShooting) {
                 currentState = robotState.shootFinished;
+            }
+            if (isNoteOut(sensor) && queuedState == robotState.ampShooting) {
+                wantedShoot = currentShoot - 5;
+                currentState = robotState.ampShootingFinal;
             }
 
         }
-        if (currentState == robotState.speakerShootingFire) {
+        if (currentState == robotState.ampShootingFinal && currentShoot <= wantedShoot) {
 
-            Feed(shootspeed);
-            feedTimer.start();
-            if (feedTimer.get() > 1 && isNoteOut(sensor)) {
-                currentState = robotState.shootFinished;
-            }
+            currentState = robotState.shootFinished;
 
-        }
-        if (currentState == robotState.speakerShootingFire || currentState == robotState.ampShooting) {
-            if (shootTimer.get() > 1) {
-                currentState = robotState.shootFinished;
-            }
         }
         if (currentState == robotState.shootFinished) {
 
             Feed(0);
             cannon.Spin(0);
+            SetDesiredAngle(33);
+            PivotStart();
             currentState = robotState.idle;
             SetQueuedState(robotState.idle);
 
@@ -193,28 +235,51 @@ public class RobotSubsystem extends SubsystemBase {
 
     public void Pivot() {
 
-        this.currentAngle = pivot.mainMotor.getAbsoluteRawAngle();
+        double speedMultiplier;
+        double angleOffset = 20;
+        this.currentAngle = pivot.mainMotor.getAbsoluteRawAngle() + angleOffset;
+        if (this.currentAngle > 360) {
+            currentAngle = this.currentAngle - 360;
+        }
+
+        if (currentAngle < 50 && desiredAngle == 33 && pidFinalValue > 0.1) {
+            speedMultiplier = 0.1;
+        } else if (currentAngle < 35 && desiredAngle == 21 && pidFinalValue > 0.1) {
+            speedMultiplier = 0.1;
+        } else if (currentAngle > 105 && desiredAngle == 118 && pidFinalValue < -0.1) {
+            speedMultiplier = 0.1;
+        } else {
+            speedMultiplier = 1;
+        }
 
         if (pivoting) {
-            boolean safezone = (currentAngle > 0 && currentAngle < 100);
+            boolean safezone = (currentAngle > 20 && currentAngle < 120);
             pidCalcValue = pivotpid.calculate(currentAngle, desiredAngle);
-
+            if (currentAngle < 20) {
+                pivot.Spin(-0.1);
+            }
+            if (currentAngle > 120) {
+                pivot.Spin(0.1);
+            }
             if (safezone) {
-                if (pivotpid.calculate(currentAngle, desiredAngle) > 0) {
-                    pidSetValue = -Math.min(pivotpid.calculate(currentAngle, desiredAngle), pivotspeed);
-                    pivot.Spin(pidSetValue);
+                if (pidCalcValue > 0) {
+                    pidSetValue = Math.min(pidCalcValue, -pivotspeed);  
                 }
-                if (pivotpid.calculate(currentAngle, desiredAngle) < 0) {
-                    pidSetValue = -Math.max(pivotpid.calculate(currentAngle, desiredAngle), -pivotspeed);
-                    pivot.Spin(pidSetValue);
+                if (pidCalcValue < 0) {
+                    pidSetValue = Math.max(pidCalcValue, pivotspeed);
                 }
+                if (desiredAngle >= currentAngle) {
+                    pidFinalValue = -Math.abs(pidSetValue);
+                } 
+                if (desiredAngle <= currentAngle) {
+                    pidFinalValue = Math.abs(pidSetValue);
+                }
+                pivot.Spin(pidFinalValue * speedMultiplier);
                 readyToShoot = false;
-            } else {
-                pivot.Spin(0);
-                pivoting = false;
-                readyToShoot = true;
             }
 
+        } else {
+            pivoting = false;
         }
 
     }
@@ -228,7 +293,7 @@ public class RobotSubsystem extends SubsystemBase {
             PivotStart();
             Pivot();
         }
-        if (GetNearDesiredAngle(1, 1) && currentState == robotState.intakingPivot) {
+        if (GetNearDesiredAngle(21, 1) && currentState == robotState.intakingPivot) {
             SetPivotSpeed(0);
             currentState = robotState.intaking;
         }
@@ -240,8 +305,10 @@ public class RobotSubsystem extends SubsystemBase {
             if (isNoteIn(sensor)) {
                 Feed(0);
                 intake.Spin(0);
-                resetStates();
-                currentState = robotState.readyToShoot;
+                SetDesiredAngle(33);
+                PivotStart();
+                queuedState = robotState.readyToShoot;
+                currentState = robotState.noteRetractingStart;
             }
         }
 
@@ -288,6 +355,7 @@ public class RobotSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Test", climb.motor.motor.getEncoder().getPosition());
         SmartDashboard.putNumber("Pid", pidCalcValue);
         SmartDashboard.putNumber("pidval", pidSetValue);
+        SmartDashboard.putNumber("BeltHall", belt.motor.inBuiltEncoder.getPosition());
 
     }
     
