@@ -151,7 +151,7 @@ public class RobotSubsystem extends SubsystemBase {
             Pivot();
         }
         if (queuedState == robotState.ampShooting) {
-            target = 117;
+            target = 117.5;
         }
         if (queuedState == robotState.speakerShooting) {
             target = 61;
@@ -246,7 +246,7 @@ public class RobotSubsystem extends SubsystemBase {
             speedMultiplier = 0.1;
         } else if (currentAngle < 35 && desiredAngle == 21 && pidFinalValue > 0.1) {
             speedMultiplier = 0.1;
-        } else if (currentAngle > 105 && desiredAngle == 118 && pidFinalValue < -0.1) {
+        } else if (currentAngle > 105 && desiredAngle == 117.5 && pidFinalValue < -0.1) {
             speedMultiplier = 0.1;
         } else {
             speedMultiplier = 1;

@@ -54,10 +54,16 @@ public class OperatorControls extends Command{
             robot.SetPivotSpeed(-0.3);
             robot.PivotStart();
         }
+        if (buttonBoard.getRawButtonPressed(climbUp)) {
+            SmartDashboard.putString("buttonPressed", "safeAngle");
+            robot.SetDesiredAngle(60);
+            robot.SetPivotSpeed(-0.03);
+            robot.PivotStart();
+        }
         if (buttonBoard.getRawButtonPressed(ampShoot)) {
             SmartDashboard.putString("buttonPressed", "ampShoot");
             robot.SetQueuedState(robotState.ampShooting);
-            robot.SetDesiredAngle(117);
+            robot.SetDesiredAngle(117.5);
             robot.SetPivotSpeed(-0.3);
             robot.SetShootSpeed(-0.12);
         }
