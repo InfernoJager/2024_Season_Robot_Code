@@ -22,6 +22,12 @@ public class RobotSubsystem extends SubsystemBase {
     public final Motors belt;
     private final AnalogInput sensor;
     private boolean climbing = false;
+    private double climbSpeed = 0;
+    private double climbRevs;
+    private boolean climbSafe = false;
+    private double modifiedPivot;
+    private boolean pivotDone;
+    private boolean climbDone;
     private boolean pivoting = false;
     public boolean readyToShoot = false;
     private double desiredAngle = 20;
@@ -34,7 +40,7 @@ public class RobotSubsystem extends SubsystemBase {
     private robotState currentState = robotState.idle;
     private robotState queuedState = robotState.idle;
     public enum robotState{
-        idle, shootPivot, speakerShooting, ampShooting, ampShootingFinal, shooting, shootFinished, intakingPivot, intaking, climbingprep, climbing, readyToShoot, noteRetractingStart, noteRetracting;
+        idle, shootPivot, speakerShooting, ampShooting, ampShootingFinal, shooting, shootFinished, intakingPivot, intaking, climbingprep, readyToClimb, climbing, readyToShoot, noteRetractingStart, noteRetracting, matchFinish;
     }
     private double pidCalcValue;
     private double pidSetValue;
@@ -118,6 +124,20 @@ public class RobotSubsystem extends SubsystemBase {
 
         this.feedspeed = speed;
 
+    }
+
+    public void SetClimbSpeed(double speed) {
+
+        this.climbSpeed = speed;
+
+    }
+
+    public void SetDesriedClimb(double length) {
+
+        // Length is in inches
+
+        this.climbRevs = length * 8;
+    
     }
 
     public void NoteBack() {
@@ -314,15 +334,134 @@ public class RobotSubsystem extends SubsystemBase {
 
     }
 
-    private void Feed(double speed) {
+    public void ClimbStart() {
 
-        belt.Spin(speed);
+        if (!climbing) {
+            climbing = true;
+        }
 
     }
 
-    public void Climb(double speed) {
-
+    public void Climb() {
         
+        // Minimum climb power is 0.1
+        // 1 inch is 8 revolutions
+        
+        double minimumSafe = 4;
+        double maximumSafe = 108;
+
+        double climbEncoder = Math.abs(climb.motor.inBuiltEncoder.getPosition());
+        boolean unsafeZone = ((climbEncoder > maximumSafe || climbEncoder < minimumSafe) || (currentAngle > 100 || currentAngle < 50));
+
+        if (!climbSafe) {
+            if (climbEncoder < minimumSafe) {
+                climb.Spin(-0.1);
+            } else if (climbEncoder > maximumSafe) {
+                climb.Spin(0.1);
+            } else {
+                climb.Spin(0);
+                climbSafe = (climbEncoder < maximumSafe && climbEncoder > minimumSafe);
+            }
+        }
+
+        if (currentState == robotState.readyToClimb) {
+                    
+            pivot.Spin(-0.01);
+
+        }
+
+        if (climbing) {
+            climbSafe = (climbEncoder < maximumSafe && climbEncoder > minimumSafe);
+            if (currentAngle < 50) {
+                pivot.Spin(-0.03);
+            } 
+            if (currentAngle > 100) {
+                pivot.Spin(0.03);
+            }
+            if (!unsafeZone) {
+                if ((currentState == robotState.idle || currentState == robotState.readyToShoot) && queuedState == robotState.climbingprep) {
+
+                    if (currentAngle < desiredAngle + 1) {
+                        modifiedPivot = -Math.abs(pivotspeed); 
+                    } 
+                    if (currentAngle > desiredAngle - 1) {
+                        modifiedPivot = Math.abs(pivotspeed);
+                    }
+
+                    climb.Spin(climbSpeed);
+                    pivot.Spin(modifiedPivot);
+                    currentState = robotState.climbingprep;
+
+                }
+                if (currentState == robotState.climbingprep) {
+                    if ((climbEncoder < (climbRevs + 1) && climbEncoder > (climbRevs - 1))) {
+
+                        climb.Spin(0);
+                        climbDone = true;
+
+                    }
+                    if (GetNearDesiredAngle(desiredAngle, 1)) {
+
+                        pivot.Spin(-0.01);
+                        pivotDone = true;
+
+                    }
+                    if (pivotDone && climbDone) {
+
+                        currentState = robotState.readyToClimb;
+                        climbing = false;
+                        pivotDone = false;
+                        climbDone = false;
+
+                    }
+
+                }
+                
+                if (currentState == robotState.readyToClimb && queuedState == robotState.climbing) {
+
+                    if (currentAngle < desiredAngle + 1) {
+                        modifiedPivot = -Math.abs(pivotspeed); 
+                    } 
+                    if (currentAngle > desiredAngle - 1) {
+                        modifiedPivot = Math.abs(pivotspeed);
+                    }
+
+                    climb.Spin(climbSpeed);
+                    pivot.Spin(modifiedPivot);
+                    currentState = robotState.climbing;
+
+                }
+                if (currentState == robotState.climbing) {
+                    if ((climbEncoder < (climbRevs + 1) && climbEncoder > (climbRevs - 1))) {
+
+                        climb.Spin(0);
+                        climbDone = true;
+
+                    }
+                    if (GetNearDesiredAngle(desiredAngle, 1)) {
+
+                        pivot.Spin(0.02);
+                        pivotDone = true;
+
+                    }
+                    if (pivotDone && climbDone) {
+
+                        pivot.Spin(0.03);
+                        currentState = robotState.matchFinish;
+
+                    }
+
+                } 
+
+            }
+
+        }
+
+    }
+
+    private void Feed(double speed) {
+
+        belt.Spin(speed);
 
     }
 
@@ -355,7 +494,7 @@ public class RobotSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Test", climb.motor.motor.getEncoder().getPosition());
         SmartDashboard.putNumber("Pid", pidCalcValue);
         SmartDashboard.putNumber("pidval", pidSetValue);
-        SmartDashboard.putNumber("BeltHall", belt.motor.inBuiltEncoder.getPosition());
+        SmartDashboard.putNumber("ClimbHall", Math.abs(climb.motor.inBuiltEncoder.getPosition()));
 
     }
     

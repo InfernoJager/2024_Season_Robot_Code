@@ -28,6 +28,8 @@ public class OperatorControls extends Command{
     @Override
     public void execute() {
 
+        double manualClimb = Math.abs(robot.climb.motor.inBuiltEncoder.getPosition());
+
         //Presets
         final int climbUp = 2;
         final int climbHigh = 3;
@@ -37,8 +39,31 @@ public class OperatorControls extends Command{
         final int ampShoot = 8;
 
         /*Operator Xbox Controller*/
+        // if (controller.getLeftY() < -0.1 && manualClimb < 108) {
+        //     robot.climb.Spin(-0.1);
+        // } else if (controller.getLeftY() > 0.1 && manualClimb > 4) {
+        //     robot.climb.Spin(0.1);
+        // }
 
         /*Operator Button Board*/
+        if (buttonBoard.getRawButtonPressed(climbUp)) {
+            SmartDashboard.putString("buttonPressed", "climbUp");
+            robot.SetQueuedState(robotState.climbingprep);
+            robot.SetClimbSpeed(0.5);
+            robot.SetDesiredAngle(66);
+            robot.SetPivotSpeed(0.5);
+            robot.SetDesriedClimb(2.5);
+            robot.ClimbStart();
+        }
+        if (buttonBoard.getRawButtonPressed(climbHigh)) {
+            SmartDashboard.putString("buttonPressed", "climbHigh");
+            robot.SetQueuedState(robotState.climbingprep);
+            robot.SetClimbSpeed(-0.5);
+            robot.SetPivotSpeed(-0.05);
+            robot.SetDesiredAngle(90);
+            robot.SetDesriedClimb(13.25);
+            robot.ClimbStart();
+        }
         if (buttonBoard.getRawButtonPressed(speakerShoot)) {
             SmartDashboard.putString("buttonPressed", "speakerShoot");
             robot.SetQueuedState(robotState.speakerShooting);
@@ -54,11 +79,14 @@ public class OperatorControls extends Command{
             robot.SetPivotSpeed(-0.3);
             robot.PivotStart();
         }
-        if (buttonBoard.getRawButtonPressed(climbUp)) {
-            SmartDashboard.putString("buttonPressed", "safeAngle");
-            robot.SetDesiredAngle(60);
-            robot.SetPivotSpeed(-0.03);
-            robot.PivotStart();
+        if (buttonBoard.getRawButtonPressed(climbLow)) {
+            SmartDashboard.putString("buttonPressed", "climbLow");
+            robot.SetQueuedState(robotState.climbingprep);
+            robot.SetClimbSpeed(-0.5);
+            robot.SetPivotSpeed(-0.05);
+            robot.SetDesiredAngle(72);
+            robot.SetDesriedClimb(8);
+            robot.ClimbStart();
         }
         if (buttonBoard.getRawButtonPressed(ampShoot)) {
             SmartDashboard.putString("buttonPressed", "ampShoot");
@@ -68,6 +96,7 @@ public class OperatorControls extends Command{
             robot.SetShootSpeed(-0.12);
         }
 
+        robot.Climb();
         robot.Shoot();
         robot.Pivot();
 
