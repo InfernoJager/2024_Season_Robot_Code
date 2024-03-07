@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.motor.PairedMotors;
@@ -47,6 +48,8 @@ public class RobotSubsystem extends SubsystemBase {
     private double pidFinalValue;
     private double wantedFeed;
     private double wantedShoot;
+    private Servo cannonLockLeft;
+    private Servo cannonLockRight;    
 
     public RobotSubsystem() {
         
@@ -62,6 +65,8 @@ public class RobotSubsystem extends SubsystemBase {
         this.belt = new Motors(Constants.FEEDER_BELT, false, false);
 
         this.sensor = new AnalogInput(0);
+        this.cannonLockRight = new Servo(1);
+        this.cannonLockLeft = new Servo(2);
 
     }
 
@@ -342,68 +347,254 @@ public class RobotSubsystem extends SubsystemBase {
 
     }
 
+    private double PivotSpeedMultiplier(){
+        double speedMultiplier;
+        if (currentAngle < 50 && desiredAngle == 33 && pidFinalValue > 0.1) {
+            speedMultiplier = 0.1;
+        } else if (currentAngle < 35 && desiredAngle == 21 && pidFinalValue > 0.1) {
+            speedMultiplier = 0.1;
+        } else if (currentAngle > 105 && desiredAngle == 117.5 && pidFinalValue < -0.1) {
+            speedMultiplier = 0.1;
+        } else {
+            speedMultiplier = 1;
+        }
+        return speedMultiplier;
+    }
+
+    private double GetPIDValue() {
+        boolean safezone = IsAngleGreaterThanPhysicalMinSafe(currentAngle) && IsAngleLessThanPhysicalMaxSafe(currentAngle);
+        double pidFinal = 0;
+        double pidCalc;
+        double pivSpeed;
+        
+        pidCalc = pivotpid.calculate(currentAngle, desiredAngle);
+        if (IsAngleLessThanPhysicalMinSafe(currentAngle)) {
+            pidFinal = -0.1; //rotate up
+            return pidFinal;
+        } else if (IsAngleGreaterThanPhysicalMaxSafe(currentAngle)) {
+            pidFinal = 0.1;  //rotate down
+            return pidFinal;
+        } else {
+            if (safezone) {
+                if (pidCalc > 0) {
+                    pidCalc = Math.abs(pidCalc);
+                    pivSpeed = Math.abs(pivotspeed);
+                    pidFinal = Math.min(pidCalc, pivSpeed);  
+                } else  {
+                    pidCalc = Math.abs(pidCalc);
+                    pivSpeed = Math.abs(pivotspeed);
+                    pidFinal = -Math.min(pidCalc, pivSpeed);  
+                }
+                return pidFinal * PivotSpeedMultiplier();
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    private boolean IsArmExtened(double revolutions) {
+        boolean answer;
+        // double maxValue;
+        double minValue;
+        // maxValue = climbRevs + 1;
+        minValue = climbRevs - 1;
+        answer =  (revolutions > minValue);
+        return answer;
+    }
+
+    private boolean IsArmRetracted(double revolutions){
+        boolean answer;
+        double maxValue;
+        // double minValue;
+        maxValue = climbRevs + 1;
+        // minValue = climbRevs - 1;
+        answer =  (revolutions < maxValue);
+        return answer;
+    }
+
+    private boolean IsArmShorterThanLimit(double revolutions){
+        boolean answer;
+        double checkValue;
+        checkValue = 4;
+        answer = revolutions < checkValue;
+        return answer;
+    }
+
+    private boolean IsArmLongerThanLimit(double revolutions){
+        boolean answer;
+        double checkValue;
+        checkValue = 108;
+        answer = revolutions > checkValue;
+        return answer;
+    }
+
+    private void ExtendArm(double power){
+        //negative power value extends arm
+        double pwr;
+        pwr = Math.abs(power);
+        climb.Spin(-pwr);
+    }
+
+    private void RetractArm(double power){
+        //positive power value retracts arm
+        double pwr;
+        pwr = Math.abs(power);
+        climb.Spin(pwr);
+    }
+
+    private void StopArmExtension(){
+        //zero power value to stop arm extension
+        climb.Spin(0);
+    }
+
+    private void RaiseCannon(double power){
+        //negative power value raises cannon
+        double pwr;
+        pwr = Math.abs(power);
+        pivot.Spin(-pwr);  
+    }
+
+    private void LowerCannon(double power){
+        //positive power value lowers cannon
+        double pwr;
+        pwr = Math.abs(power);
+        pivot.Spin(pwr);  
+    }
+
+
+    private boolean IsCannonBelowDesiredAngle(double angle){
+        boolean answer;
+        double checkValue;
+        checkValue = desiredAngle + 1;
+        answer =  (angle < checkValue) ;
+        return answer;
+    }
+
+    private boolean IsCannonAboveDesiredAngle(double angle){
+        boolean answer;
+        double checkValue;
+        checkValue = desiredAngle + 1;
+        answer =  (angle < checkValue) ;
+        return answer;
+    }
+
+    private boolean IsAngleLessThanPivotMinSafe(double angle){
+        boolean answer;
+        double checkValue;
+        checkValue = 50;
+        answer = angle < checkValue;
+        return answer;
+    }
+
+    private boolean IsAngleGreaterThanPivotMaxSafe(double angle){
+        boolean answer;
+        double checkValue;
+        checkValue = 100;
+        answer = angle > checkValue;
+        return answer;
+    }
+
+    
+    private boolean IsAngleLessThanPhysicalMinSafe(double angle){
+        boolean answer;
+        double checkValue;
+        checkValue = 20;
+        answer = angle < checkValue;
+        return answer;
+    }
+
+    private boolean IsAngleGreaterThanPhysicalMaxSafe(double angle){
+        boolean answer;
+        double checkValue;
+        checkValue = 120;
+        answer = angle > checkValue;
+        return answer;
+    }
+
+    private boolean IsAngleGreaterThanPhysicalMinSafe(double angle){
+        boolean answer;
+        answer = IsAngleLessThanPhysicalMinSafe(angle);
+        return !answer;
+    }
+
+    private boolean IsAngleLessThanPhysicalMaxSafe(double angle){
+        boolean answer;
+        answer = IsAngleGreaterThanPhysicalMaxSafe(angle);
+        return !answer;
+    }
+
+
+    private boolean allowClimbPivot = false;
+    private boolean allowExtension = false;
+
+
     public void Climb() {
         
         // Minimum climb power is 0.1
         // 1 inch is 8 revolutions
         
-        double minimumSafe = 4;
-        double maximumSafe = 108;
-
         double climbEncoder = Math.abs(climb.motor.inBuiltEncoder.getPosition());
-        boolean unsafeZone = ((climbEncoder > maximumSafe || climbEncoder < minimumSafe) || (currentAngle > 100 || currentAngle < 50));
+        boolean unsafeZone = IsArmLongerThanLimit(climbEncoder) || IsArmShorterThanLimit(climbEncoder) || IsAngleLessThanPivotMinSafe(currentAngle) || IsAngleGreaterThanPivotMaxSafe(currentAngle);
+        SmartDashboard.putBoolean("unsafeZone", unsafeZone);
 
-        if (!climbSafe) {
-            if (climbEncoder < minimumSafe) {
-                climb.Spin(-0.1);
-            } else if (climbEncoder > maximumSafe) {
-                climb.Spin(0.1);
-            } else {
-                climb.Spin(0);
-                climbSafe = (climbEncoder < maximumSafe && climbEncoder > minimumSafe);
-            }
-        }
-
-        if (currentState == robotState.readyToClimb) {
-                    
-            pivot.Spin(-0.01);
-
-        }
 
         if (climbing) {
-            climbSafe = (climbEncoder < maximumSafe && climbEncoder > minimumSafe);
-            if (currentAngle < 50) {
-                pivot.Spin(-0.03);
-            } 
-            if (currentAngle > 100) {
-                pivot.Spin(0.03);
+            if (IsArmShorterThanLimit(climbEncoder)) {
+                SmartDashboard.putString("executeArm", "Extend");
+
+                ExtendArm(0.1);
+            } else if (IsArmLongerThanLimit(climbEncoder)) {
+                SmartDashboard.putString("executeArm", "Retract");
+                RetractArm(0.1);
+            } else {
+                if (!allowExtension) {
+                    SmartDashboard.putString("executeArm", "Stop");
+                    climb.Spin(0);
+                }
             }
+
+            if (IsAngleLessThanPivotMinSafe(currentAngle)) {
+                RaiseCannon(0.08);  
+            } else if (IsAngleGreaterThanPivotMaxSafe(currentAngle)) {
+                LowerCannon(0.08);  
+            } else {
+                if (!allowClimbPivot) {
+                    pivot.Spin(0);
+                }
+            }
+
+
             if (!unsafeZone) {
-                if ((currentState == robotState.idle || currentState == robotState.readyToShoot) && queuedState == robotState.climbingprep) {
-
-                    if (currentAngle < desiredAngle + 1) {
-                        modifiedPivot = -Math.abs(pivotspeed); 
-                    } 
-                    if (currentAngle > desiredAngle - 1) {
-                        modifiedPivot = Math.abs(pivotspeed);
+                if ((currentState == robotState.idle || currentState == robotState.readyToShoot)) {
+                    if (queuedState == robotState.climbingprep) {
+                        if (IsCannonBelowDesiredAngle(currentAngle)) {
+                           RaiseCannon(pivotspeed);
+                        } 
+                        if (IsCannonAboveDesiredAngle(currentAngle)) {
+                           LowerCannon(pivotspeed * 0.5);
+                        }
+                        
+                        allowClimbPivot = true;
+                        allowExtension = true;
+                        ExtendArm(climbSpeed);
+                        currentState = robotState.climbingprep;
                     }
-
-                    climb.Spin(climbSpeed);
-                    pivot.Spin(modifiedPivot);
-                    currentState = robotState.climbingprep;
-
                 }
                 if (currentState == robotState.climbingprep) {
-                    if ((climbEncoder < (climbRevs + 1) && climbEncoder > (climbRevs - 1))) {
+                    if (IsArmExtened(climbEncoder)) {
 
-                        climb.Spin(0);
+                        StopArmExtension();
                         climbDone = true;
+                        allowExtension = false;
 
                     }
                     if (GetNearDesiredAngle(desiredAngle, 1)) {
 
-                        pivot.Spin(-0.01);
+                        //pivot.Spin(-0.01);
                         pivotDone = true;
+                        RaiseCannon(0.01);
+                        allowClimbPivot = false;
+                        LockServo();
 
                     }
                     if (pivotDone && climbDone) {
@@ -412,41 +603,48 @@ public class RobotSubsystem extends SubsystemBase {
                         climbing = false;
                         pivotDone = false;
                         climbDone = false;
+                        
 
                     }
 
                 }
                 
-                if (currentState == robotState.readyToClimb && queuedState == robotState.climbing) {
+                if (currentState == robotState.readyToClimb) {
 
-                    if (currentAngle < desiredAngle + 1) {
-                        modifiedPivot = -Math.abs(pivotspeed); 
-                    } 
-                    if (currentAngle > desiredAngle - 1) {
-                        modifiedPivot = Math.abs(pivotspeed);
+                    if (queuedState == robotState.climbing) {
+
+                        //if IsCannonBelowDesiredAngle(currentAngle) {
+                        //    modifiedPivot = -Math.abs(pivotspeed); //rotate up
+                        //} 
+                        //if IsCannonAboveDesiredAngle(currentAngle) {
+                        //    modifiedPivot = Math.abs(pivotspeed); //rotate down
+                        //}
+
+                        //pivot.Spin(modifiedPivot);
+
+                        RetractArm(climbSpeed);  
+                        currentState = robotState.climbing;
+                        allowExtension = true;
                     }
-
-                    climb.Spin(climbSpeed);
-                    pivot.Spin(modifiedPivot);
-                    currentState = robotState.climbing;
 
                 }
                 if (currentState == robotState.climbing) {
-                    if ((climbEncoder < (climbRevs + 1) && climbEncoder > (climbRevs - 1))) {
+                    if (IsArmRetracted(climbEncoder)) {
 
-                        climb.Spin(0);
+                        StopArmExtension();
                         climbDone = true;
+                        allowExtension = false;
 
                     }
-                    if (GetNearDesiredAngle(desiredAngle, 1)) {
+                    // if (GetNearDesiredAngle(desiredAngle, 1)) {
 
-                        pivot.Spin(0.02);
-                        pivotDone = true;
+                    //     //pivot.Spin(0.02);
+                    //     pivotDone = true;
 
-                    }
-                    if (pivotDone && climbDone) {
+                    // }
+                    if (climbDone) {
 
-                        pivot.Spin(0.03);
+                        //pivot.Spin(0.03);
                         currentState = robotState.matchFinish;
 
                     }
@@ -485,6 +683,11 @@ public class RobotSubsystem extends SubsystemBase {
 
     }
 
+    public void LockServo(){
+        cannonLockRight.set(1);
+        cannonLockLeft.set(1);
+    }
+
     public void debugSmartDashboard() {
 
         SmartDashboard.putNumber("desiredAngle", desiredAngle);
@@ -495,6 +698,8 @@ public class RobotSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pid", pidCalcValue);
         SmartDashboard.putNumber("pidval", pidSetValue);
         SmartDashboard.putNumber("ClimbHall", Math.abs(climb.motor.inBuiltEncoder.getPosition()));
+        SmartDashboard.putNumber("ClimbTarget", climbRevs);
+        SmartDashboard.putBoolean("isPivoting", pivoting);
 
     }
     

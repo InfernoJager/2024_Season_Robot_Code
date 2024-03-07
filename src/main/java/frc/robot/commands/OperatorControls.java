@@ -31,12 +31,13 @@ public class OperatorControls extends Command{
         double manualClimb = Math.abs(robot.climb.motor.inBuiltEncoder.getPosition());
 
         //Presets
-        final int climbUp = 2;
-        final int climbHigh = 3;
-        final int speakerShoot = 4;
-        final int cancelOperation = 6;
-        final int climbLow = 7;
-        final int ampShoot = 8;
+        final int climbUp = 2; // X
+        final int climbing = 3; // R
+        final int speakerShoot = 4; // A
+        final int test = 5; // Select
+        final int cancelOperation = 6; // Start
+        final int climbLow = 7; // L
+        final int ampShoot = 8; // B
 
         /*Operator Xbox Controller*/
         // if (controller.getLeftY() < -0.1 && manualClimb < 108) {
@@ -47,21 +48,21 @@ public class OperatorControls extends Command{
 
         /*Operator Button Board*/
         if (buttonBoard.getRawButtonPressed(climbUp)) {
-            SmartDashboard.putString("buttonPressed", "climbUp");
+            SmartDashboard.putString("buttonPressed", "climbingprep");
             robot.SetQueuedState(robotState.climbingprep);
             robot.SetClimbSpeed(0.5);
             robot.SetDesiredAngle(66);
             robot.SetPivotSpeed(0.5);
-            robot.SetDesriedClimb(2.5);
+            robot.SetDesriedClimb(13.25);
             robot.ClimbStart();
         }
-        if (buttonBoard.getRawButtonPressed(climbHigh)) {
-            SmartDashboard.putString("buttonPressed", "climbHigh");
-            robot.SetQueuedState(robotState.climbingprep);
-            robot.SetClimbSpeed(-0.5);
-            robot.SetPivotSpeed(-0.05);
-            robot.SetDesiredAngle(90);
-            robot.SetDesriedClimb(13.25);
+        if (buttonBoard.getRawButtonPressed(climbing)) {
+            SmartDashboard.putString("buttonPressed", "climb");
+            robot.SetQueuedState(robotState.climbing);
+            robot.SetClimbSpeed(0.75);
+            // robot.SetPivotSpeed(-0.05);
+            // robot.SetDesiredAngle(90);
+            robot.SetDesriedClimb(3 );
             robot.ClimbStart();
         }
         if (buttonBoard.getRawButtonPressed(speakerShoot)) {
@@ -94,6 +95,9 @@ public class OperatorControls extends Command{
             robot.SetDesiredAngle(117.5);
             robot.SetPivotSpeed(-0.3);
             robot.SetShootSpeed(-0.12);
+        }
+        if (buttonBoard.getRawButtonPressed(test)) {
+            robot.LockServo();
         }
 
         robot.Climb();
