@@ -28,15 +28,16 @@ public class OperatorControls extends Command{
     @Override
     public void execute() {
 
-        double manualClimb = Math.abs(robot.climb.motor.inBuiltEncoder.getPosition());
+        //double manualClimb = Math.abs(robot.climb.motor.inBuiltEncoder.getPosition());
 
         //Presets
-        final int climbUp = 2; // X
-        final int climbing = 3; // R
+        // Button board layout from top down
+        // 4 3 2 1
+        // 8 7 6 5
+        final int climbUp = 3; // R
+        final int climbing = 2; // X
         final int speakerShoot = 4; // A
-        final int test = 5; // Select
         final int cancelOperation = 6; // Start
-        final int climbLow = 7; // L
         final int ampShoot = 8; // B
 
         /*Operator Xbox Controller*/
@@ -52,7 +53,7 @@ public class OperatorControls extends Command{
             robot.SetQueuedState(robotState.climbingprep);
             robot.SetClimbSpeed(0.5);
             robot.SetDesiredAngle(66);
-            robot.SetPivotSpeed(0.5);
+            robot.SetPivotSpeed(0.4);
             robot.SetDesriedClimb(13.25);
             robot.ClimbStart();
         }
@@ -80,24 +81,12 @@ public class OperatorControls extends Command{
             robot.SetPivotSpeed(-0.3);
             robot.PivotStart();
         }
-        if (buttonBoard.getRawButtonPressed(climbLow)) {
-            SmartDashboard.putString("buttonPressed", "climbLow");
-            robot.SetQueuedState(robotState.climbingprep);
-            robot.SetClimbSpeed(-0.5);
-            robot.SetPivotSpeed(-0.05);
-            robot.SetDesiredAngle(72);
-            robot.SetDesriedClimb(8);
-            robot.ClimbStart();
-        }
         if (buttonBoard.getRawButtonPressed(ampShoot)) {
             SmartDashboard.putString("buttonPressed", "ampShoot");
             robot.SetQueuedState(robotState.ampShooting);
             robot.SetDesiredAngle(117.5);
             robot.SetPivotSpeed(-0.3);
             robot.SetShootSpeed(-0.12);
-        }
-        if (buttonBoard.getRawButtonPressed(test)) {
-            robot.LockServo();
         }
 
         robot.Climb();

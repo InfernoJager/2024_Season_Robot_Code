@@ -79,13 +79,18 @@ public class RobotSubsystem extends SubsystemBase {
 
     public void revertStates() {
 
-        if (queuedState == robotState.intakingPivot) {
+        if (queuedState == robotState.intakingPivot || queuedState == robotState.readyToShoot) {
             queuedState = robotState.idle;
             currentState = robotState.idle;
         }
-        if (queuedState == robotState.ampShooting || queuedState == robotState.speakerShooting) {
+        if (queuedState == robotState.ampShooting || queuedState == robotState.speakerShooting || queuedState == robotState.idle) {
             queuedState = robotState.readyToShoot;
             currentState = robotState.readyToShoot;
+        }
+        if (currentState == robotState.matchFinish) {
+            SetDesriedClimb(13.25);
+            queuedState = robotState.climbingprep;
+            currentState = robotState.idle;
         }
 
     }
@@ -269,6 +274,8 @@ public class RobotSubsystem extends SubsystemBase {
 
         if (currentAngle < 50 && desiredAngle == 33 && pidFinalValue > 0.1) {
             speedMultiplier = 0.1;
+        } else if (currentAngle < 24 && desiredAngle == 21 && pidFinalValue < 0.03) {
+            speedMultiplier = 5;
         } else if (currentAngle < 35 && desiredAngle == 21 && pidFinalValue > 0.1) {
             speedMultiplier = 0.1;
         } else if (currentAngle > 105 && desiredAngle == 117.5 && pidFinalValue < -0.1) {
@@ -347,50 +354,6 @@ public class RobotSubsystem extends SubsystemBase {
 
     }
 
-    private double PivotSpeedMultiplier(){
-        double speedMultiplier;
-        if (currentAngle < 50 && desiredAngle == 33 && pidFinalValue > 0.1) {
-            speedMultiplier = 0.1;
-        } else if (currentAngle < 35 && desiredAngle == 21 && pidFinalValue > 0.1) {
-            speedMultiplier = 0.1;
-        } else if (currentAngle > 105 && desiredAngle == 117.5 && pidFinalValue < -0.1) {
-            speedMultiplier = 0.1;
-        } else {
-            speedMultiplier = 1;
-        }
-        return speedMultiplier;
-    }
-
-    private double GetPIDValue() {
-        boolean safezone = IsAngleGreaterThanPhysicalMinSafe(currentAngle) && IsAngleLessThanPhysicalMaxSafe(currentAngle);
-        double pidFinal = 0;
-        double pidCalc;
-        double pivSpeed;
-        
-        pidCalc = pivotpid.calculate(currentAngle, desiredAngle);
-        if (IsAngleLessThanPhysicalMinSafe(currentAngle)) {
-            pidFinal = -0.1; //rotate up
-            return pidFinal;
-        } else if (IsAngleGreaterThanPhysicalMaxSafe(currentAngle)) {
-            pidFinal = 0.1;  //rotate down
-            return pidFinal;
-        } else {
-            if (safezone) {
-                if (pidCalc > 0) {
-                    pidCalc = Math.abs(pidCalc);
-                    pivSpeed = Math.abs(pivotspeed);
-                    pidFinal = Math.min(pidCalc, pivSpeed);  
-                } else  {
-                    pidCalc = Math.abs(pidCalc);
-                    pivSpeed = Math.abs(pivotspeed);
-                    pidFinal = -Math.min(pidCalc, pivSpeed);  
-                }
-                return pidFinal * PivotSpeedMultiplier();
-            } else {
-                return 0;
-            }
-        }
-    }
 
     private boolean IsArmExtened(double revolutions) {
         boolean answer;
@@ -542,10 +505,10 @@ public class RobotSubsystem extends SubsystemBase {
             if (IsArmShorterThanLimit(climbEncoder)) {
                 SmartDashboard.putString("executeArm", "Extend");
 
-                ExtendArm(0.1);
+                ExtendArm(0.07);
             } else if (IsArmLongerThanLimit(climbEncoder)) {
                 SmartDashboard.putString("executeArm", "Retract");
-                RetractArm(0.1);
+                RetractArm(0.07);
             } else {
                 if (!allowExtension) {
                     SmartDashboard.putString("executeArm", "Stop");
@@ -613,18 +576,10 @@ public class RobotSubsystem extends SubsystemBase {
 
                     if (queuedState == robotState.climbing) {
 
-                        //if IsCannonBelowDesiredAngle(currentAngle) {
-                        //    modifiedPivot = -Math.abs(pivotspeed); //rotate up
-                        //} 
-                        //if IsCannonAboveDesiredAngle(currentAngle) {
-                        //    modifiedPivot = Math.abs(pivotspeed); //rotate down
-                        //}
-
-                        //pivot.Spin(modifiedPivot);
-
                         RetractArm(climbSpeed);  
                         currentState = robotState.climbing;
                         allowExtension = true;
+
                     }
 
                 }
@@ -636,15 +591,8 @@ public class RobotSubsystem extends SubsystemBase {
                         allowExtension = false;
 
                     }
-                    // if (GetNearDesiredAngle(desiredAngle, 1)) {
-
-                    //     //pivot.Spin(0.02);
-                    //     pivotDone = true;
-
-                    // }
                     if (climbDone) {
 
-                        //pivot.Spin(0.03);
                         currentState = robotState.matchFinish;
 
                     }
