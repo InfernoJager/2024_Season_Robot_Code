@@ -10,15 +10,19 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.commands.AutoSequentialGroup;
 import frc.robot.commands.DriverControls;
 import frc.robot.commands.OperatorControls;
 import frc.robot.subsystems.RobotSubsystem;
 import frc.robot.motor.Motors;
+import frc.robot.subsystems.LimelightSubsystem;
 
 
 public class RobotContainer {
   DriveSubsystem drive = new DriveSubsystem();
   RobotSubsystem robot = new RobotSubsystem();
+  AutoSequentialGroup auto ;
+  // LimelightSubsystem limelight = new LimelightSubsystem();
   
   XboxController driverController = new XboxController(Constants.DRIVE_CONTROL_PORT);
   XboxController operatorController = new XboxController(Constants.OPERATOR_CONTROL_PORT);
@@ -29,8 +33,9 @@ public class RobotContainer {
   Motors encodeTest;
 
   public RobotContainer() {
-    drive.setDefaultCommand(new DriverControls(drive, driverController));
+    drive.setDefaultCommand(new DriverControls(drive, robot, driverController));
     robot.setDefaultCommand(new OperatorControls(robot, operatorController, buttonBoard));
+    auto = new AutoSequentialGroup(drive, robot);
     configureBindings();
   }
 
@@ -41,10 +46,14 @@ public class RobotContainer {
 
  
   public Command getAutonomousCommand() {
-    return null;
+    return auto;
   }
 
   public void displayDebug() {
     drive.modules.debugSmartDashboard();
+    robot.pivot.debugSmartDashboard();
+    robot.debugSmartDashboard();
+    // limelight.LimelightWhere();
+    drive.modules.encoderVoltage();
   }
 }

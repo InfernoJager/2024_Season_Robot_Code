@@ -1,9 +1,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.subsystems.RobotSubsystem;
+import frc.robot.subsystems.RobotSubsystem.robotState;
 
 public class OperatorControls extends Command{
     
@@ -25,45 +27,77 @@ public class OperatorControls extends Command{
 
     @Override
     public void execute() {
-        
+
+        //double manualClimb = Math.abs(robot.climb.motor.inBuiltEncoder.getPosition());
+
         //Presets
-        final int ampPreset = 1;
-        final int intakePreset = 3;
-        final int intake = 4;
-        final int speakerShoot = 5;
-        final int ampShoot = 6;
-        final int stuckNotePreset = 7;
-        final int stuckNoteOuttake = 8;
+        // Button board layout from top down
+        // 4 3 2 1
+        // 8 7 6 5
+        final int climbUp = 3; // R
+        final int climbing = 2; // X
+        final int speakerShoot = 4; // A
+        final int cancelOperation = 6; // Start
+        final int ampShoot = 8; // B
+        final int test = 1;//Y
 
         /*Operator Xbox Controller*/
-        if (controller.getAButtonPressed()) {
-            robot.Shoot(0.05, 3);
-        }
+        // if (controller.getLeftY() < -0.1 && manualClimb < 108) {
+        //     robot.climb.Spin(-0.1);
+        // } else if (controller.getLeftY() > 0.1 && manualClimb > 4) {
+        //     robot.climb.Spin(0.1);
+        // }
 
         /*Operator Button Board*/
-        if (buttonBoard.getRawButtonPressed(ampPreset)) {
-            robot.Pivot(0, 119, 0.05);
+        if (buttonBoard.getRawButtonPressed(climbUp)) {
+            SmartDashboard.putString("buttonPressed", "climbingprep");
+            robot.SetQueuedState(robotState.climbingprep);
+            robot.SetClimbSpeed(0.5);
+            robot.SetDesiredAngle(66);
+            robot.SetPivotSpeed(0.11);
+            robot.SetDesriedClimb(13.25);
+            robot.ClimbStart();
         }
-        if (buttonBoard.getRawButtonPressed(intakePreset)) {
-            robot.Pivot(0, 20, 0.05);
+        if (buttonBoard.getRawButtonPressed(climbing)) {
+            SmartDashboard.putString("buttonPressed", "climb");
+            robot.SetQueuedState(robotState.climbing);
+            robot.SetClimbSpeed(0.75);
+            // robot.SetPivotSpeed(-0.05);
+            // robot.SetDesiredAngle(90);
+            robot.SetDesriedClimb(3 );
+            robot.ClimbStart();
         }
-        if (buttonBoard.getRawButton(intake)) {
-            robot.Intake(0.05, 1);
+        if (buttonBoard.getRawButtonPressed(speakerShoot)) {
+            SmartDashboard.putString("buttonPressed", "speakerShoot");
+            robot.SetQueuedState(robotState.speakerShooting);
+            robot.SetDesiredAngle(61);
+            robot.SetPivotSpeed(-0.3);
+            robot.SetShootSpeed(-1);
         }
-        if (buttonBoard.getRawButton(speakerShoot)) {
-            robot.Pivot(0, 0, 0.05);
-            robot.Shoot(0.05, 1);
+        if (buttonBoard.getRawButtonPressed(cancelOperation)) {
+            SmartDashboard.putString("buttonPressed", "safeAngle");
+            robot.resetMotors();
+            robot.revertStates();
+            robot.SetDesiredAngle(33);
+            robot.SetPivotSpeed(-0.3);
+            robot.PivotStart();
         }
-        if (buttonBoard.getRawButton(ampShoot)) {
-            robot.Shoot(0.05, 1);
+        if (buttonBoard.getRawButtonPressed(ampShoot)) {
+            SmartDashboard.putString("buttonPressed", "ampShoot");
+            robot.SetQueuedState(robotState.ampShooting);
+            robot.SetDesiredAngle(117.5);
+            robot.SetPivotSpeed(-0.3);
+            robot.SetShootSpeed(-0.12);
         }
-        if (buttonBoard.getRawButton(stuckNotePreset)) {
-            robot.Pivot(0, 90, 0.05);
-        }
-        if (buttonBoard.getRawButton(stuckNoteOuttake)) {
-            robot.Intake(0.05, 1);
-        }
-            
+        //if (buttonBoard.getRawButtonPressed(test)) {
+        //    SmartDashboard.putString("buttonPressed", "test Servo");
+        //    robot.LockServo();
+        //}
+
+        robot.Climb();
+        robot.Shoot();
+        robot.Pivot();
+
     }
 
     @Override

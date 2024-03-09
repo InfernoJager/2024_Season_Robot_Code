@@ -4,9 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoCamera;
+import edu.wpi.first.cscore.VideoSink;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.AutoShoot;
+import frc.robot.subsystems.RobotSubsystem.robotState;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -27,6 +34,11 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    UsbCamera camera = CameraServer.startAutomaticCapture();
+    camera.setResolution(320, 240);
+    camera.setBrightness(40);
+    camera.setFPS(20);
+    
   }
 
   /**
@@ -48,10 +60,17 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.robot.resetStates();
+    m_robotContainer.robot.resetMotors();
+  }
 
   @Override
   public void disabledPeriodic() {}
+
+
+
+  private AutoShoot autoCommand;
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -60,8 +79,10 @@ public class Robot extends TimedRobot {
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
+      SmartDashboard.putString("AutoState", "Autoscheduled");
       m_autonomousCommand.schedule();
     }
+    
   }
 
   /** This function is called periodically during autonomous. */

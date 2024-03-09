@@ -42,7 +42,7 @@ public class DriveSubsystem extends SubsystemBase {
    * NOTE: the speed of any wheel can reach a maximum of turn + |velocity|
    */
   public void move(VectorR directionalSpeed, double turnSpeed, boolean aPressed, boolean startPressed) {
-
+    
     double speedMultiplier;
 
     if (startPressed && aPressed) {
@@ -56,7 +56,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     VectorR directionalPull = directionalSpeed.clone();
-    directionalPull.rotate(getYawDegrees());
+    directionalPull.rotate(getYawDegrees() + 90);
 
     for (SwerveModule module : modules) {
 
@@ -70,9 +70,10 @@ public class DriveSubsystem extends SubsystemBase {
   }
   
   public void stop() {
+
     for (SwerveModule module : modules) {
       
-      module.stopDefensively();
+      module.stop();
 
     }
 
@@ -101,5 +102,13 @@ public class DriveSubsystem extends SubsystemBase {
   public void resetDriveEncoders() {
     for (var mod : modules)
       mod.resetDriveEncoder();
+  }
+
+  public double getRawMagX(){
+    return gyro.getRawMagX();
+  }
+
+  public double getRawMagY(){
+    return gyro.getRawMagY();
   }
 }
