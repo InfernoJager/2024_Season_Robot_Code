@@ -15,14 +15,14 @@ public class AutoShoot extends Command{
     public void initialize(){
         robot.resetStates();
         robot.SetRobotCurrentState(robotState.readyToShoot);
-        robot.SetDesiredAngle(61);
+        robot.SetDesiredAngle(62);
         robot.SetPivotSpeed(-0.3);
         robot.SetShootSpeed(-1);
         robot.SetQueuedState(robotState.speakerShooting);
     }
 
     @Override
-    public void execute(){
+    public void execute() {
         robot.Shoot();
     }
 

@@ -34,12 +34,12 @@ public class OperatorControls extends Command{
         // Button board layout from top down
         // 4 3 2 1
         // 8 7 6 5
+        final int intake = 1;
         final int climbUp = 3; // R
         final int climbing = 2; // X
         final int speakerShoot = 4; // A
         final int cancelOperation = 6; // Start
         final int ampShoot = 8; // B
-        final int test = 1;//Y
 
         /*Operator Xbox Controller*/
         // if (controller.getLeftY() < -0.1 && manualClimb < 108) {
@@ -49,14 +49,11 @@ public class OperatorControls extends Command{
         // }
 
         /*Operator Button Board*/
-        if (buttonBoard.getRawButtonPressed(climbUp)) {
-            SmartDashboard.putString("buttonPressed", "climbingprep");
-            robot.SetQueuedState(robotState.climbingprep);
-            robot.SetClimbSpeed(0.5);
-            robot.SetDesiredAngle(66);
-            robot.SetPivotSpeed(0.11);
-            robot.SetDesriedClimb(13.25);
-            robot.ClimbStart();
+        if (buttonBoard.getRawButton(intake)) {
+            robot.SetIntakeSpeed(0.35);
+            robot.SetPivotSpeed(-0.3);
+            robot.SetDesiredAngle(21);
+            robot.SetQueuedState(robotState.intakingPivot);
         }
         if (buttonBoard.getRawButtonPressed(climbing)) {
             SmartDashboard.putString("buttonPressed", "climb");
@@ -67,10 +64,19 @@ public class OperatorControls extends Command{
             robot.SetDesriedClimb(3 );
             robot.ClimbStart();
         }
+        if (buttonBoard.getRawButtonPressed(climbUp)) {
+            SmartDashboard.putString("buttonPressed", "climbingprep");
+            robot.SetQueuedState(robotState.climbingprep);
+            robot.SetClimbSpeed(0.5);
+            robot.SetDesiredAngle(66);
+            robot.SetPivotSpeed(0.11);
+            robot.SetDesriedClimb(13.25);
+            robot.ClimbStart();
+        }
         if (buttonBoard.getRawButtonPressed(speakerShoot)) {
             SmartDashboard.putString("buttonPressed", "speakerShoot");
             robot.SetQueuedState(robotState.speakerShooting);
-            robot.SetDesiredAngle(61);
+            robot.SetDesiredAngle(62);
             robot.SetPivotSpeed(-0.3);
             robot.SetShootSpeed(-1);
         }
@@ -89,11 +95,10 @@ public class OperatorControls extends Command{
             robot.SetPivotSpeed(-0.3);
             robot.SetShootSpeed(-0.12);
         }
-        //if (buttonBoard.getRawButtonPressed(test)) {
-        //    SmartDashboard.putString("buttonPressed", "test Servo");
-        //    robot.LockServo();
-        //}
+        
 
+        robot.NoteBack();
+        robot.Intake();
         robot.Climb();
         robot.Shoot();
         robot.Pivot();

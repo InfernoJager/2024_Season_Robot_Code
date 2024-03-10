@@ -63,7 +63,7 @@ public class DriveSubsystem extends SubsystemBase {
       VectorR rotationalPull = VectorR.fromPolar(turnSpeed, module.info.MODULE_TANGENT_DEG);
       VectorR wheelPull = VectorR.addVectors(directionalPull, rotationalPull);
 
-      module.update(wheelPull.getMagnitude() * speedMultiplier, wheelPull.getAngle());
+      module.update(wheelPull.getMagnitude() * 0.65 * speedMultiplier, wheelPull.getAngle());
 
     }
 

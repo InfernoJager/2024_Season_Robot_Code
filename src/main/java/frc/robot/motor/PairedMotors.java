@@ -1,5 +1,7 @@
 package frc.robot.motor;
 
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PairedMotors {
@@ -9,8 +11,11 @@ public class PairedMotors {
 
     public PairedMotors(MotorInfo main, MotorInfo slave, boolean analog, boolean absolute) {
         
+        
         this.mainMotor = new Motor(main, analog, absolute);
         this.slaveMotor = new Motor(slave, false, false);
+
+        
 
     }
 
@@ -18,6 +23,24 @@ public class PairedMotors {
         
         mainMotor.motor.set(speed);
         slaveMotor.motor.set(-speed);
+
+    }
+
+    public double GetSpeed() {
+
+        double speed1 = Math.abs(mainMotor.motor.get());
+        double speed2 = Math.abs(slaveMotor.motor.get());
+
+        double speed = (speed1 + speed2)/2;
+
+        return speed;
+
+    }
+    
+    public void SetRampRate(double rate) {
+
+        mainMotor.motor.setClosedLoopRampRate(rate);
+        slaveMotor.motor.setClosedLoopRampRate(rate);
 
     }
 

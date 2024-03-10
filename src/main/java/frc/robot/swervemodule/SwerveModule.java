@@ -36,6 +36,7 @@ public class SwerveModule {
     this.defensiveAngleDeg = VectorR.fromCartesian(info.X, info.Y).getAngle();
     angleMotor.setIdleMode(IdleMode.kCoast);
     driveMotor.setIdleMode(IdleMode.kBrake);
+    driveMotor.setClosedLoopRampRate(0.5);
     
   }
 
@@ -114,7 +115,7 @@ public class SwerveModule {
       speed_power = 0;
     }
     
-    driveMotor.set(speed_power); 
+    driveMotor.set(MathR.limit(speed_power, -1, 1)); 
     angleMotor.set(angle_power);
 
     
