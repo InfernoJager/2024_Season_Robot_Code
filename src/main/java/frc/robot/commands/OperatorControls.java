@@ -91,9 +91,9 @@ public class OperatorControls extends Command{
         if (buttonBoard.getRawButtonPressed(ampShoot)) {
             SmartDashboard.putString("buttonPressed", "ampShoot");
             robot.SetQueuedState(robotState.ampShooting);
-            robot.SetDesiredAngle(117.5);
+            robot.SetDesiredAngle(60);
             robot.SetPivotSpeed(-0.3);
-            robot.SetShootSpeed(-0.12);
+            robot.SetShootSpeed(-0.10);
         }
         
 

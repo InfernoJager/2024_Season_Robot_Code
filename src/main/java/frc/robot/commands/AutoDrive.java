@@ -6,7 +6,8 @@ import frc.robot.utils.VectorR;
 
 public class AutoDrive extends Command {
         private DriveSubsystem drive;
-        private VectorR moveSpeed; 
+        private VectorR moveSpeed;
+        private double position; 
 
         public AutoDrive(DriveSubsystem drive){
             this.drive = drive;
@@ -18,21 +19,25 @@ public class AutoDrive extends Command {
         }
 
         @Override
-        public void execute(){
-            moveSpeed.setMagnitude(0.1);
+        public void execute() {
+            moveSpeed.setMagnitude(0.15);
             moveSpeed.setAngle(0);
             drive.move(moveSpeed , 0, false, false);
+            position = Math.abs(drive.modules.backRight.driveMotor.getEncoder().getPosition());
         }
 
         @Override
         public boolean isFinished() {
-          return true;
+            if (position > 30) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         @Override
         public void end(boolean interrupted){
-            moveSpeed.setMagnitude(0.0);
-            drive.move(moveSpeed, 0, false, false);
+            drive.stop();
         }
 
 }

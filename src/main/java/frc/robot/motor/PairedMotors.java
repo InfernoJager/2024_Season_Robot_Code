@@ -25,17 +25,6 @@ public class PairedMotors {
         slaveMotor.motor.set(-speed);
 
     }
-
-    public double GetSpeed() {
-
-        double speed1 = Math.abs(mainMotor.motor.get());
-        double speed2 = Math.abs(slaveMotor.motor.get());
-
-        double speed = (speed1 + speed2)/2;
-
-        return speed;
-
-    }
     
     public void SetRampRate(double rate) {
 
@@ -46,7 +35,6 @@ public class PairedMotors {
 
     public void debugSmartDashboard() {
         
-        SmartDashboard.putNumber("Pivot", mainMotor.getAbsoluteRawAngle() + 20);
         SmartDashboard.putNumber("PivotConversin", mainMotor.absoluteEncoder.getPositionConversionFactor());
 
     }
