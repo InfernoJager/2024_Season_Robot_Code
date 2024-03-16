@@ -18,7 +18,7 @@ import frc.robot.Constants;
 
 public class AutoDriveSubsystem extends SubsystemBase {
     
-    private SimSwerveModule[] modules;
+  private SimSwerveModule[] modules;
   private SwerveDriveKinematics kinematics;
   private SwerveDriveOdometry odometry;
 
@@ -27,6 +27,7 @@ public class AutoDriveSubsystem extends SubsystemBase {
   private Field2d field = new Field2d();
   
   public AutoDriveSubsystem() {
+
     gyro = new SimGyro();
     modules = new SimSwerveModule[]{
       new SimSwerveModule(),
@@ -59,6 +60,7 @@ public class AutoDriveSubsystem extends SubsystemBase {
               return alliance.get() == DriverStation.Alliance.Red;
           }
           return false;
+
       },
       this
     );

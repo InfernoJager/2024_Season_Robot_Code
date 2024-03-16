@@ -54,7 +54,7 @@ public class RobotSubsystem extends SubsystemBase {
     public RobotSubsystem() {
         
         this.cannon = new PairedMotors(Constants.CANNON_MAIN, Constants.CANNON_SLAVE, false, false);
-        this.cannon.SetRampRate(1);
+        this.cannon.SetRampRate(0.75);
         this.pivot = new PairedMotors(Constants.PIVOT_MAIN, Constants.PIVOT_SLAVE, false, true);
         this.pivot.mainMotor.absoluteEncoder.setInverted(true);
         this.pivot.SetRampRate(0.1);
@@ -169,7 +169,7 @@ public class RobotSubsystem extends SubsystemBase {
             Feed(0.1);
         }
         if (isNoteOut(sensor) && currentState == robotState.noteRetractingStart) {
-            wantedFeed = currentFeed - 1.75;
+            wantedFeed = currentFeed - 1.5;
             currentState = robotState.noteRetracting;
         }
         if (currentState == robotState.noteRetracting && currentFeed <= wantedFeed) {
@@ -192,10 +192,10 @@ public class RobotSubsystem extends SubsystemBase {
             Pivot();
         }
         if (queuedState == robotState.ampShooting) {
-            target = 60;
+            target = 117.5;
         }
         if (queuedState == robotState.speakerShooting) {
-            target = 62;
+            target = 65;
         }
         if (currentState == robotState.shootPivot && GetNearDesiredAngle(target, 0.75) && Math.abs(pidFinalValue) < 0.05) {
             currentState = queuedState;
@@ -211,7 +211,7 @@ public class RobotSubsystem extends SubsystemBase {
             cannon.Spin(shootspeed);
 
         }
-        if (currentState == robotState.speakerShooting) {
+        if (cannon.mainMotor.inBuiltEncoder.getVelocity() <= -5500 && currentState == robotState.speakerShooting) {
 
             Feed(-1);
 
@@ -740,7 +740,7 @@ public class RobotSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("ClimbHall", Math.abs(climb.motor.inBuiltEncoder.getPosition()));
         SmartDashboard.putNumber("ClimbTarget", climbRevs);
         SmartDashboard.putBoolean("isPivoting", pivoting);
-        SmartDashboard.putNumber("cannonmotorspeed", cannon.mainMotor.motor.get());
+        SmartDashboard.putNumber("cannonmotorspeed", cannon.mainMotor.inBuiltEncoder.getVelocity());
         SmartDashboard.putNumber("pivot", pivot.mainMotor.getAbsoluteRawAngle() + 20);
 
     }

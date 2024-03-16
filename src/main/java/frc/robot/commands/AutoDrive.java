@@ -9,8 +9,8 @@ public class AutoDrive extends Command {
         private VectorR moveSpeed;
         private double position; 
 
-        public AutoDrive(DriveSubsystem drive){
-            this.drive = drive;
+        public AutoDrive(){
+            this.drive = new DriveSubsystem();
         }
 
         @Override

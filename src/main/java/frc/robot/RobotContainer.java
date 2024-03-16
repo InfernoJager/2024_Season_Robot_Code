@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.commands.DriverControls;
 import frc.robot.commands.OperatorControls;
+import frc.robot.commands.AutoRoutine;
 import frc.robot.subsystems.RobotSubsystem;
 import frc.robot.motor.Motors;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -25,11 +26,13 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import frc.robot.subsystems.AutoDriveSubsystem;
 
 
 public class RobotContainer {
   DriveSubsystem drive = new DriveSubsystem();
   RobotSubsystem robot = new RobotSubsystem();
+  private final AutoDriveSubsystem auto = new AutoDriveSubsystem();
   // LimelightSubsystem limelight = new LimelightSubsystem();
   
   XboxController driverController = new XboxController(Constants.DRIVE_CONTROL_PORT);
@@ -40,26 +43,27 @@ public class RobotContainer {
   OperatorControls operator;
   Motors encodeTest;
 
-  private final SendableChooser<Command> autoChooser;
+  //private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
     drive.setDefaultCommand(new DriverControls(drive, robot, driverController));
     robot.setDefaultCommand(new OperatorControls(robot, operatorController, buttonBoard));
     configureBindings();
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto", autoChooser);
+    //autoChooser = AutoBuilder.buildAutoChooser();
+    //SmartDashboard.putData("Auto", autoChooser);
   }
 
   
   private void configureBindings() {
-    SmartDashboard.putData("Test Auto", new PathPlannerAuto("New Auto"));
+    //SmartDashboard.putData("Test Auto", new PathPlannerAuto("New Auto"));
     
     SmartDashboard.putData(new InstantCommand(()->{DriveSubsystem.resetGyro(0);}));
   }
 
  public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    //return autoChooser.getSelected();
+    return null;
   }
 
   public void displayDebug() {

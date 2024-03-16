@@ -7,8 +7,8 @@ import frc.robot.subsystems.RobotSubsystem.robotState;
 public class AutoShoot extends Command{
     private RobotSubsystem robot;
 
-    public AutoShoot(RobotSubsystem robot){
-        this.robot = robot;
+    public AutoShoot() {
+        this.robot = new RobotSubsystem();
     }
 
     @Override
