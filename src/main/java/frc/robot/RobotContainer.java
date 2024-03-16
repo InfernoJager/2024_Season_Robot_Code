@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.auto.AutoChooser;
 import frc.robot.auto.TestAuto;
 import frc.robot.commands.DriverControls;
 import frc.robot.commands.OperatorControls;
@@ -32,7 +33,7 @@ import frc.robot.subsystems.AutoDriveSubsystem;
 public class RobotContainer {
   DriveSubsystem drive = new DriveSubsystem();
   RobotSubsystem robot = new RobotSubsystem();
-  TestAuto auto = new TestAuto(drive);
+  AutoChooser auto = new AutoChooser(drive, robot);
   // LimelightSubsystem limelight = new LimelightSubsystem();
   
   XboxController driverController = new XboxController(Constants.DRIVE_CONTROL_PORT);
@@ -63,7 +64,7 @@ public class RobotContainer {
 
  public Command getAutonomousCommand() {
     //return autoChooser.getSelected();
-    return auto;
+    return auto.GetAuto();
   }
 
   public void displayDebug() {
