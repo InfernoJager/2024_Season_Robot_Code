@@ -18,9 +18,7 @@ public class AutoDrive extends Command {
         }
 
         @Override
-        public void initialize(){
-            SmartDashboard.putBoolean("AutoFinished", false);
-        }
+        public void initialize() {}
 
         @Override
         public void execute() {
@@ -30,7 +28,7 @@ public class AutoDrive extends Command {
 
         @Override
         public boolean isFinished() {
-            if (position > 2000) {
+            if (position > 500) {
                 SmartDashboard.putBoolean("AutoFinished", true);
                 return true;
             } else {

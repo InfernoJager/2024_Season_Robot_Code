@@ -34,7 +34,7 @@ public class AutoChooser extends Command{
     private void SetAuto() {
 
         final TestAuto testAuto = new TestAuto(drive);
-        final TwoNoteAuto twoNoteAuto = new TwoNoteAuto(drive);
+        final TwoNoteAuto twoNoteAuto = new TwoNoteAuto(robot);
 
         m_TestAuto = testAuto;
         m_TwoNoteAuto = twoNoteAuto;

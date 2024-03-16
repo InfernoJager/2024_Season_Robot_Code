@@ -1,13 +1,13 @@
 package frc.robot.auto;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.RobotSubsystem;
 
 public class TwoNoteAuto extends SequentialCommandGroup{
     
-    public TwoNoteAuto(DriveSubsystem drive) {
+    public TwoNoteAuto(RobotSubsystem robot) {
 
-        addCommands(new AutoDrive(drive));
+        addCommands(new AutoShoot(robot));
 
     }
 

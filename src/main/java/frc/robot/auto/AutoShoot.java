@@ -17,7 +17,7 @@ public class AutoShoot extends Command{
     public void initialize(){
         robot.resetStates();
         robot.SetRobotCurrentState(robotState.readyToShoot);
-        robot.SetDesiredAngle(62);
+        robot.SetDesiredAngle(65);
         robot.SetPivotSpeed(-0.3);
         robot.SetShootSpeed(-1);
         robot.SetQueuedState(robotState.speakerShooting);
