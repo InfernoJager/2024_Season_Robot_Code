@@ -1,14 +1,16 @@
-package frc.robot.commands;
+package frc.robot.auto;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.RobotSubsystem;
 import frc.robot.subsystems.RobotSubsystem.robotState;
 
 public class AutoShoot extends Command{
-    private RobotSubsystem robot;
+    private final RobotSubsystem robot;
 
-    public AutoShoot() {
-        this.robot = new RobotSubsystem();
+    public AutoShoot(RobotSubsystem robot) {
+
+        this.robot = robot;
+
     }
 
     @Override
