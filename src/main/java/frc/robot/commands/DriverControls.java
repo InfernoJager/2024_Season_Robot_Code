@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.RobotSubsystem;
 import frc.robot.subsystems.RobotSubsystem.robotState;
+import frc.robot.Robot;
+import edu.wpi.first.wpilibj.DriverStation;
 
 import java.lang.Math;
 import frc.robot.utils.VectorR;
@@ -44,18 +46,21 @@ public class DriverControls extends Command {
         SmartDashboard.putNumber("LeftY", driverController.getLeftY());
 
         //Driver Xbox Controller
-        if (driverController.getRightTriggerAxis() > 0.1) {
-            drive.move(leftJoystick, 0.25, driverController.getAButton(), driverController.getStartButton());
-        } else if (driverController.getLeftTriggerAxis() > 0.1) {
-            drive.move(leftJoystick, -0.25, driverController.getAButton(), driverController.getStartButton());
-        } else if (driverController.getRightBumper()) {
-            drive.move(leftJoystick, 0.125, driverController.getAButton(), driverController.getStartButton());
-        } else if (driverController.getLeftBumper()) {
-            drive.move(leftJoystick, -0.125, driverController.getAButton(), driverController.getStartButton());
-        } else if (leftJoystick.getMagnitude() > 0.1) {
-            drive.move(leftJoystick, 0, driverController.getAButton(), driverController.getStartButton());
-        } else {
-            drive.stop();
+        if (DriverStation.isTeleopEnabled()) {
+            if (driverController.getRightTriggerAxis() > 0.1) {
+                drive.move(leftJoystick, 0.25, driverController.getAButton(), driverController.getStartButton(), true);
+            } else if (driverController.getLeftTriggerAxis() > 0.1) {
+                drive.move(leftJoystick, -0.25, driverController.getAButton(), driverController.getStartButton(), true);
+            } else if (driverController.getRightBumper()) {
+                drive.move(leftJoystick, 0.125, driverController.getAButton(), driverController.getStartButton(), true);
+            } else if (driverController.getLeftBumper()) {
+                drive.move(leftJoystick, -0.125, driverController.getAButton(), driverController.getStartButton(), true);
+            } else if (leftJoystick.getMagnitude() > 0.1) {
+                drive.move(leftJoystick, 0, driverController.getAButton(), driverController.getStartButton(), false);
+            } else {
+                drive.stop();
+            }
+
         }
 
     }

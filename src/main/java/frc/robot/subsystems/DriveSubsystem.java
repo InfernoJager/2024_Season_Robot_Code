@@ -6,7 +6,9 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.swervemodule.SwerveModule;
@@ -23,6 +25,8 @@ public class DriveSubsystem extends SubsystemBase {
   // OTHER
   private boolean defensiveMode = true;
   private static double yawOffsetDegrees = 0;
+  private double desiredYaw;
+  private double currentYaw;
 
   public DriveSubsystem() {
     modules = new SwerveModules(
@@ -41,9 +45,10 @@ public class DriveSubsystem extends SubsystemBase {
    * turn (0-1)
    * NOTE: the speed of any wheel can reach a maximum of turn + |velocity|
    */
-  public void move(VectorR directionalSpeed, double turnSpeed, boolean aPressed, boolean startPressed) {
+  public void move(VectorR directionalSpeed, double turnSpeed, boolean aPressed, boolean startPressed, boolean turning) {
     
     double speedMultiplier;
+    
 
     if (startPressed && aPressed) {
       speedMultiplier = 1;
@@ -53,6 +58,24 @@ public class DriveSubsystem extends SubsystemBase {
       speedMultiplier = 2;
     } else {
       speedMultiplier = 1;
+    }
+
+    if (DriverStation.isAutonomous()) {
+      currentYaw = gyro.getYaw() + 180;
+
+      if (turning) {
+        desiredYaw = currentYaw;
+      } else if (desiredYaw == 0) {
+        desiredYaw = currentYaw;
+      }
+
+      if (!turning && currentYaw > desiredYaw - 0.25) {
+        turnSpeed = -0.035;
+      } else if (!turning && currentYaw < desiredYaw + 0.25) {
+        turnSpeed = 0.035;
+      } else if (!turning) {
+        turnSpeed = 0;
+      }
     }
 
     VectorR directionalPull = directionalSpeed.clone();
@@ -66,6 +89,9 @@ public class DriveSubsystem extends SubsystemBase {
       module.update(wheelPull.getMagnitude() * speedMultiplier, wheelPull.getAngle());
 
     }
+
+    SmartDashboard.putNumber("DesiredYaw", desiredYaw);
+    SmartDashboard.putNumber("CurrentYaw", currentYaw);
 
   }
   
