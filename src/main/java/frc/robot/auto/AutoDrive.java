@@ -13,8 +13,10 @@ public class AutoDrive extends Command {
     private double startPosition;
     private double angle;
     private double magnitude;
+    private double turnSpeed;
+    private boolean turning;
 
-    public AutoDrive(DriveSubsystem drive, double distance, double angle, double magnitude) {
+    public AutoDrive(DriveSubsystem drive, double distance, double angle, double magnitude, double turnSpeed) {
 
         // angle is on a cartesian, forward is 270, right is 0, back is 90, left is 180
         this.drive = drive;
@@ -22,6 +24,7 @@ public class AutoDrive extends Command {
         this.desiredPosition = distance;
         this.angle = angle;
         this.magnitude = magnitude;
+        this.turnSpeed = turnSpeed;
 
     }
 
@@ -33,9 +36,17 @@ public class AutoDrive extends Command {
 
     @Override
     public void execute() {
-        drive.move(moveSpeed, 0, false, false, false);
+        
+        if (Math.abs(turnSpeed) > 0) {
+            turning = true;
+        } else {
+            turning = false;
+        }
+        
+        drive.move(moveSpeed, turnSpeed, false, false, turning);
 
         // One revolution is 0.5116 inches
+        // One full rotation is 49.52 revolutions
         position = Math.abs(drivePosition() - startPosition);
         SmartDashboard.putNumber("Expected Position", position);
     }

@@ -58,10 +58,8 @@ public class OperatorControls extends Command{
         if (buttonBoard.getRawButtonPressed(climbing)) {
             SmartDashboard.putString("buttonPressed", "climb");
             robot.SetQueuedState(robotState.climbing);
-            robot.SetClimbSpeed(0.75);
-            // robot.SetPivotSpeed(-0.05);
-            // robot.SetDesiredAngle(90);
-            robot.SetDesriedClimb(3 );
+            robot.SetClimbSpeed(1);
+            robot.SetDesriedClimb(13.75);
             robot.ClimbStart();
         }
         if (buttonBoard.getRawButtonPressed(climbUp)) {
@@ -93,11 +91,17 @@ public class OperatorControls extends Command{
             SmartDashboard.putString("buttonPressed", "ampShoot");
             robot.SetQueuedState(robotState.ampShooting);
             robot.SetDesiredAngle(117.5);
-            robot.SetPivotSpeed(-1);
-            robot.SetShootSpeed(-0.1);
+            robot.SetPivotSpeed(-0.5);
+            robot.SetShootSpeed(-0.085);
         }
+        // if (buttonBoard.getRawButtonPressed(ampShoot)) {
+        //     SmartDashboard.putString("buttonPressed", "ampShoot");
+        //     robot.SetQueuedState(robotState.ampShooting);
+        //     robot.SetDesiredAngle(60.5);
+        //     robot.SetPivotSpeed(-1);
+        //     robot.SetShootSpeed(-0.15);
+        // }
         
-
         robot.NoteBack();
         robot.Intake();
         robot.Climb();

@@ -168,10 +168,10 @@ public class RobotSubsystem extends SubsystemBase {
         double currentFeed = Math.abs(belt.motor.inBuiltEncoder.getPosition());
 
         if (currentState == robotState.noteRetractingStart) {
-            Feed(0.1);
+            Feed(0.25);
         }
         if (isNoteOut(sensor) && currentState == robotState.noteRetractingStart) {
-            wantedFeed = currentFeed - 1.5;
+            wantedFeed = currentFeed;
             currentState = robotState.noteRetracting;
         }
         if (currentState == robotState.noteRetracting && currentFeed <= wantedFeed) {
@@ -187,7 +187,7 @@ public class RobotSubsystem extends SubsystemBase {
         double currentShoot = cannon.mainMotor.inBuiltEncoder.getPosition();
 
         if (queuedState == robotState.ampShooting) {
-            target = 60;
+            target = 117.5;
         }
         if (queuedState == robotState.speakerShooting) {
             target = targetAngle;
@@ -200,7 +200,7 @@ public class RobotSubsystem extends SubsystemBase {
             PivotStart(target);
             Pivot();
         }
-        if (currentState == robotState.shootPivot && GetNearDesiredAngle(target, 0.4) && Math.abs(pidFinalValue) < 0.1) {
+        if (currentState == robotState.shootPivot && (GetNearDesiredAngle(target, 0.7) || DriverStation.isAutonomous() && GetNearDesiredAngle(target, 1)) && Math.abs(pidFinalValue) < 0.1) {
             currentState = queuedState;
         }
         if (currentState == robotState.ampShooting) {
@@ -310,10 +310,10 @@ public class RobotSubsystem extends SubsystemBase {
             boolean safezone = (currentAngle > 20 && currentAngle < 120);
             pidCalcValue = pivotpid.calculate(currentAngle, desiredAngle);
             if (currentAngle < 20) {
-                pivot.Spin(-0.1);
+                pivot.Spin(-0.03);
             }
             if (currentAngle > 120) {
-                pivot.Spin(0.1);
+                pivot.Spin(0.03);
             }
             if (safezone) {
                 if (pidCalcValue > 0) {
@@ -424,7 +424,7 @@ public class RobotSubsystem extends SubsystemBase {
     private boolean IsArmLongerThanLimit(double revolutions){
         boolean answer;
         double checkValue;
-        checkValue = 108;
+        checkValue = 110;
         answer = revolutions > checkValue;
         return answer;
     }
@@ -630,9 +630,9 @@ public class RobotSubsystem extends SubsystemBase {
 						// 90 degrees the arm should be standing up vertically
 						// try to hold cannon in place
 						if (currentAngle < 90){
-							RaiseCannon(0.01,false); 
+							RaiseCannon(0.05,false); 
 						} else {
-							LowerCannon(0.01, false); 
+							LowerCannon(0.05, false); 
 						}
 					} else {
 						RestoreCannonMovement();
@@ -667,7 +667,7 @@ public class RobotSubsystem extends SubsystemBase {
                     if (IsCannonAboveDesiredAngle(currentAngle)) {
 
                         pivotDone = true;
-                        RaiseCannon(0.01, true); //want to hold cannon in place
+                        RaiseCannon(0.05, true); //want to hold cannon in place
                         LockServo();
 
 

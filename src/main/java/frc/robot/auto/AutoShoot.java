@@ -21,7 +21,7 @@ public class AutoShoot extends Command{
         m_robot.SetRobotCurrentState(robotState.readyToShoot);
         m_robot.SetDesiredAngle(shootAngle);
         m_robot.SetTargetAngle(shootAngle);
-        m_robot.SetPivotSpeed(-0.3);
+        m_robot.SetPivotSpeed(-1);
         m_robot.SetShootSpeed(-1);
         m_robot.SetQueuedState(robotState.speakerShooting);
 

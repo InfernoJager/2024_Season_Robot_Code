@@ -45,6 +45,15 @@ public class DriveSubsystem extends SubsystemBase {
    * turn (0-1)
    * NOTE: the speed of any wheel can reach a maximum of turn + |velocity|
    */
+
+  public double GetGyro() {
+
+    double yaw = gyro.getYaw() + 180;
+
+    return yaw;
+
+  }
+  
   public void move(VectorR directionalSpeed, double turnSpeed, boolean aPressed, boolean startPressed, boolean turning) {
     
     double speedMultiplier;
@@ -70,9 +79,9 @@ public class DriveSubsystem extends SubsystemBase {
       }
 
       if (!turning && currentYaw > desiredYaw - 0.25) {
-        turnSpeed = -0.035;
+        turnSpeed = -0.0475;
       } else if (!turning && currentYaw < desiredYaw + 0.25) {
-        turnSpeed = 0.035;
+        turnSpeed = 0.0475;
       } else if (!turning) {
         turnSpeed = 0;
       }

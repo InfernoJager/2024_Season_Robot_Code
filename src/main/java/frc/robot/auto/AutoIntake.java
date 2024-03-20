@@ -18,7 +18,7 @@ public class AutoIntake extends Command {
     public void initialize() {
 
         m_robot.SetIntakeSpeed(0.5);
-        m_robot.SetPivotSpeed(-0.3);
+        m_robot.SetPivotSpeed(-1);
         m_robot.SetDesiredAngle(21);
         m_robot.SetQueuedState(robotState.intakingPivot);
 
