@@ -7,7 +7,7 @@ public class LeaveAuto extends SequentialCommandGroup {
 
     public LeaveAuto(DriveSubsystem drive) {
 
-        addCommands(new AutoDrive(drive, 35, 270, 0.4, 0));
+        addCommands(new AutoDrive(drive, 42.5, 270, 0.4, 0));
 
     }
 

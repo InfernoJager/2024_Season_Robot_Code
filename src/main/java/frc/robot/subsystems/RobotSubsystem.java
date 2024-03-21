@@ -43,7 +43,7 @@ public class RobotSubsystem extends SubsystemBase {
     private robotState currentState = robotState.idle;
     private robotState queuedState = robotState.idle;
     public enum robotState{
-        idle, shootPivot, speakerShooting, ampShooting, ampShootingFinal, shooting, shootFinished, intakingPivot, intaking, climbingprep, readyToClimb, climbing, readyToShoot, noteRetractingStart, noteRetracting, matchFinish;
+        idle, shootPivot, speakerShooting, ampShooting, ampAngleShoot, ampShootingFinal, shooting, shootFinished, intakingPivot, intaking, climbingprep, readyToClimb, climbing, readyToShoot, noteRetractingStart, noteRetracting, matchFinish;
     }
     private double pidCalcValue;
     private double pidSetValue;
@@ -187,7 +187,7 @@ public class RobotSubsystem extends SubsystemBase {
         double currentShoot = cannon.mainMotor.inBuiltEncoder.getPosition();
 
         if (queuedState == robotState.ampShooting) {
-            target = 117.5;
+            target = 80;
         }
         if (queuedState == robotState.speakerShooting) {
             target = targetAngle;
@@ -205,8 +205,17 @@ public class RobotSubsystem extends SubsystemBase {
         }
         if (currentState == robotState.ampShooting) {
 
-            Feed(-0.5);
             cannon.Spin(shootspeed);
+            currentState = queuedState;
+
+        }
+        if (currentState == robotState.ampShooting && GetNearDesiredAngle(80, 1) && Math.abs(cannon.mainMotor.inBuiltEncoder.getVelocity()) >= 400) {
+
+            SetDesiredAngle(104);
+            SetPivotSpeed(-0.5);
+            PivotStart(104);
+            queuedState = robotState.ampAngleShoot;
+            belt.Spin(-0.5);
 
         }
         if (currentState == robotState.speakerShooting || (DriverStation.isAutonomous() && queuedState == robotState.speakerShooting)) {
@@ -219,7 +228,7 @@ public class RobotSubsystem extends SubsystemBase {
             Feed(-1);
 
         }
-        if (currentState == robotState.speakerShooting || currentState == robotState.ampShooting) {
+        if (currentState == robotState.speakerShooting || currentState == robotState.ampAngleShoot) {
             
             if (isNoteIn(sensor)) {
                 currentState = robotState.shooting;
@@ -231,7 +240,7 @@ public class RobotSubsystem extends SubsystemBase {
             if (isNoteOut(sensor) && queuedState == robotState.speakerShooting) {
                 currentState = robotState.shootFinished;
             }
-            if (isNoteOut(sensor) && queuedState == robotState.ampShooting) {
+            if (isNoteOut(sensor) && queuedState == robotState.ampAngleShoot) {
                 wantedShoot = currentShoot - 5;
                 currentState = robotState.ampShootingFinal;
             }
@@ -283,7 +292,7 @@ public class RobotSubsystem extends SubsystemBase {
 
     }
 
-    private boolean GetNearDesiredAngle(double targetAngle, double deadzone) {
+    public boolean GetNearDesiredAngle(double targetAngle, double deadzone) {
 
         return (GetDesiredAngle() == targetAngle && GetDesiredAngle() > currentAngle - deadzone && GetDesiredAngle() < currentAngle + deadzone);
 
