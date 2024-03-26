@@ -99,9 +99,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     }
 
-    SmartDashboard.putNumber("DesiredYaw", desiredYaw);
-    SmartDashboard.putNumber("CurrentYaw", currentYaw);
-
   }
   
   public void stop() {

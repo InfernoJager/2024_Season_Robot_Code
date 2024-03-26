@@ -3,6 +3,9 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import javax.swing.text.StyleContext.SmallAttributeSet;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.subsystems.RobotSubsystem;
 import frc.robot.subsystems.RobotSubsystem.robotState;
@@ -39,6 +42,7 @@ public class OperatorControls extends Command{
         final int climbing = 2; // X
         final int speakerShoot = 4; // A
         final int cancelOperation = 6; // Start
+        final int trapShoot = 7;
         final int ampShoot = 8; // B
 
         /*Operator Xbox Controller*/
@@ -50,29 +54,30 @@ public class OperatorControls extends Command{
 
         /*Operator Button Board*/
         if (buttonBoard.getRawButton(intake)) {
-            robot.SetIntakeSpeed(0.5);
+            SmartDashboard.putString("buttonPressed", "Intake");
+            robot.SetIntakeSpeed(0.4);
             robot.SetPivotSpeed(-1);
             robot.SetDesiredAngle(21);
             robot.SetQueuedState(robotState.intakingPivot);
         }
         if (buttonBoard.getRawButtonPressed(climbing)) {
-            SmartDashboard.putString("buttonPressed", "climb");
+            SmartDashboard.putString("buttonPressed", "Climbing");
             robot.SetQueuedState(robotState.climbing);
             robot.SetClimbSpeed(1);
-            robot.SetDesriedClimb(13.75);
+            robot.SetDesriedClimb(3);
             robot.ClimbStart();
         }
         if (buttonBoard.getRawButtonPressed(climbUp)) {
-            SmartDashboard.putString("buttonPressed", "climbingprep");
+            SmartDashboard.putString("buttonPressed", "Climbing Prep");
             robot.SetQueuedState(robotState.climbingprep);
-            robot.SetClimbSpeed(0.5);
+            robot.SetClimbSpeed(1);
             robot.SetDesiredAngle(66);
             robot.SetPivotSpeed(0.11);
-            robot.SetDesriedClimb(13.25);
+            robot.SetDesriedClimb(13);
             robot.ClimbStart();
         }
         if (buttonBoard.getRawButtonPressed(speakerShoot)) {
-            SmartDashboard.putString("buttonPressed", "speakerShoot");
+            SmartDashboard.putString("buttonPressed", "Speaker Shoot");
             robot.SetQueuedState(robotState.speakerShooting);
             robot.SetDesiredAngle(65);
             robot.SetTargetAngle(65);
@@ -80,27 +85,25 @@ public class OperatorControls extends Command{
             robot.SetShootSpeed(-1);
         }
         if (buttonBoard.getRawButtonPressed(cancelOperation)) {
-            SmartDashboard.putString("buttonPressed", "safeAngle");
+            SmartDashboard.putString("buttonPressed", "Cancel");
             robot.resetMotors();
             robot.revertStates();
-            robot.SetDesiredAngle(33);
-            robot.SetPivotSpeed(-1);
-            robot.PivotStart(33);
         }
+        // if (buttonBoard.getRawButtonPressed(trapShoot)) {
+        //     SmartDashboard.putString("buttonPressed", "Trap Shoot");
+        //     robot.SetQueuedState(robotState.speakerShooting);
+        //     robot.SetDesiredAngle(97);
+        //     robot.SetTargetAngle(97);
+        //     robot.SetPivotSpeed(-1);
+        //     robot.SetShootSpeed(-1);
+        // }
         if (buttonBoard.getRawButtonPressed(ampShoot)) {
-            SmartDashboard.putString("buttonPressed", "ampShoot");
+            SmartDashboard.putString("buttonPressed", "Amp Shoot");
             robot.SetQueuedState(robotState.ampShooting);
             robot.SetDesiredAngle(80);
             robot.SetPivotSpeed(-0.5);
             robot.SetShootSpeed(-0.13);
         }
-        // if (buttonBoard.getRawButtonPressed(ampShoot)) {
-        //     SmartDashboard.putString("buttonPressed", "ampShoot");
-        //     robot.SetQueuedState(robotState.ampShooting);
-        //     robot.SetDesiredAngle(60.5);
-        //     robot.SetPivotSpeed(-1);
-        //     robot.SetShootSpeed(-0.15);
-        // }
         
         robot.NoteBack();
         robot.Intake();

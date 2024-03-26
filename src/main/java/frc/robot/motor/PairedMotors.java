@@ -35,7 +35,7 @@ public class PairedMotors {
 
     public void debugSmartDashboard() {
         
-        SmartDashboard.putNumber("PivotConversin", mainMotor.absoluteEncoder.getPositionConversionFactor());
+        // SmartDashboard.putNumber("PivotConversin", mainMotor.absoluteEncoder.getPositionConversionFactor());
 
     }
 

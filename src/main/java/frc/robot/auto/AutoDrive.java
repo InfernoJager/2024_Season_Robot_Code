@@ -48,7 +48,7 @@ public class AutoDrive extends Command {
         // One revolution is 0.5116 inches
         // One full rotation is 49.52 revolutions
         position = Math.abs(drivePosition() - startPosition);
-        SmartDashboard.putNumber("Expected Position", position);
+        // SmartDashboard.putNumber("Expected Position", position);
     }
 
     @Override

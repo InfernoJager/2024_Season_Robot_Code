@@ -26,8 +26,6 @@ public class RobotSubsystem extends SubsystemBase {
     private boolean climbing = false;
     private double climbSpeed = 0;
     private double climbRevs;
-    private boolean climbSafe = false;
-    private double modifiedPivot;
     private boolean pivotDone;
     private boolean climbDone;
     private boolean pivoting = false;
@@ -43,7 +41,7 @@ public class RobotSubsystem extends SubsystemBase {
     private robotState currentState = robotState.idle;
     private robotState queuedState = robotState.idle;
     public enum robotState{
-        idle, shootPivot, speakerShooting, ampShooting, ampAngleShoot, ampShootingFinal, shooting, shootFinished, intakingPivot, intaking, climbingprep, readyToClimb, climbing, readyToShoot, noteRetractingStart, noteRetracting, matchFinish;
+        idle, shootPivot, speakerShooting, ampShooting, ampAngleShoot, ampShootingFinal, shooting, shootFinished, intakingPivot, intaking, climbingprep, readyToClimb, climbing, readyToShoot, noteRetractingStart, noteRetracting, trapShoot, matchFinish;
     }
     private double pidCalcValue;
     private double pidSetValue;
@@ -52,6 +50,7 @@ public class RobotSubsystem extends SubsystemBase {
     private double wantedShoot;
     private Servo cannonLockLeft;
     private Servo cannonLockRight;   
+    private double beltSpeakerPos;
 
     public RobotSubsystem() {
         
@@ -83,16 +82,20 @@ public class RobotSubsystem extends SubsystemBase {
 
     public void revertStates() {
 
-        UnlockServo();
         if (queuedState == robotState.intakingPivot || queuedState == robotState.readyToShoot) {
             queuedState = robotState.idle;
             currentState = robotState.idle;
+            SetDesiredAngle(33);
+            PivotStart(33);
         } else if (queuedState == robotState.ampShooting || queuedState == robotState.speakerShooting || queuedState == robotState.idle) {
             queuedState = robotState.readyToShoot;
             currentState = robotState.readyToShoot;
+            SetDesiredAngle(33);
+            PivotStart(33);
         }
         if (currentState == robotState.matchFinish) {
-            SetDesriedClimb(13.25);
+            SetDesriedClimb(13);
+            ClimbStart();
             queuedState = robotState.climbingprep;
             currentState = robotState.idle;
         }
@@ -189,7 +192,7 @@ public class RobotSubsystem extends SubsystemBase {
         if (queuedState == robotState.ampShooting) {
             target = 80;
         }
-        if (queuedState == robotState.speakerShooting) {
+        if (queuedState == robotState.speakerShooting || queuedState == robotState.trapShoot) {
             target = targetAngle;
         }
 
@@ -218,17 +221,17 @@ public class RobotSubsystem extends SubsystemBase {
             belt.Spin(-0.5);
 
         }
-        if (currentState == robotState.speakerShooting || (DriverStation.isAutonomous() && queuedState == robotState.speakerShooting)) {
+        if (currentState == robotState.speakerShooting || currentState == robotState.trapShoot || (DriverStation.isAutonomous() && queuedState == robotState.speakerShooting)) {
 
             cannon.Spin(shootspeed);
 
         }
-        if (cannon.mainMotor.inBuiltEncoder.getVelocity() <= -5500 && currentState == robotState.speakerShooting) {
+        if (cannon.mainMotor.inBuiltEncoder.getVelocity() <= -5500 && (currentState == robotState.speakerShooting || currentState == robotState.trapShoot)) {
 
             Feed(-1);
 
         }
-        if (currentState == robotState.speakerShooting || currentState == robotState.ampAngleShoot) {
+        if (currentState == robotState.speakerShooting || currentState == robotState.ampAngleShoot || currentState == robotState.trapShoot) {
             
             if (isNoteIn(sensor)) {
                 currentState = robotState.shooting;
@@ -243,6 +246,12 @@ public class RobotSubsystem extends SubsystemBase {
             if (isNoteOut(sensor) && queuedState == robotState.ampAngleShoot) {
                 wantedShoot = currentShoot - 5;
                 currentState = robotState.ampShootingFinal;
+            }
+            if (isNoteOut(sensor) && queuedState == robotState.trapShoot) {
+                Feed(0);
+                cannon.Spin(0);
+                currentState = robotState.idle;
+                SetQueuedState(robotState.idle);
             }
 
         }
@@ -355,7 +364,7 @@ public class RobotSubsystem extends SubsystemBase {
                 pivot.Spin(pidFinalValue * speedMultiplier);
                 readyToShoot = false;
 
-                SmartDashboard.putNumber("Pidfinal", pidFinalValue * speedMultiplier);
+                // SmartDashboard.putNumber("Pidfinal", pidFinalValue * speedMultiplier);
             }
 
         } else {
@@ -605,93 +614,98 @@ public class RobotSubsystem extends SubsystemBase {
 
 
         if (climbing) {
-            if (IsArmShorterThanLimit(climbEncoder)) {
-                SmartDashboard.putString("executeArm", "Extend");
-				climbArmSafetyUsed = true;
-				climbArmSafeZone = false;
-                ExtendArm(0.07, false);
-            } else if (IsArmLongerThanLimit(climbEncoder)) {
-                SmartDashboard.putString("executeArm", "Retract");
-				climbArmSafetyUsed = true;
-				climbArmSafeZone = false;
-                RetractArm(0.07, false);
-            } else {
-                if (climbArmSafetyUsed) {
-                    SmartDashboard.putString("executeArm", "Stop");
-					climbArmSafetyUsed = false;
-                    RestoreArmMovement();
+            if (queuedState == robotState.climbingprep) {
+                if (IsArmShorterThanLimit(climbEncoder)) {
+                    // SmartDashboard.putString("executeArm", "Extend");
+			    	climbArmSafetyUsed = true;
+			    	climbArmSafeZone = false;
+                    ExtendArm(0.07, false);
+                } else if (IsArmLongerThanLimit(climbEncoder)) {
+                    // SmartDashboard.putString("executeArm", "Retract");
+			    	climbArmSafetyUsed = true;
+			    	climbArmSafeZone = false;
+                    RetractArm(0.5, false);
+                } else {
+                    if (climbArmSafetyUsed) {
+                        // SmartDashboard.putString("executeArm", "Stop");
+			    		climbArmSafetyUsed = false;
+                        RestoreArmMovement();
+                    }
+			    	climbArmSafeZone = true;
                 }
-				climbArmSafeZone = true;
-            }
 
-            if (IsAngleLessThanPivotMinSafe(currentAngle)) {
-				climbCannonSafetyUsed = true;
-				climbCannonSafeZone = false;
-                RaiseCannon(0.08, false);  
-            } else if (IsAngleGreaterThanPivotMaxSafe(currentAngle)) {
-				climbCannonSafetyUsed = true;
-				climbCannonSafeZone = false;
-                LowerCannon(0.08, false);  
-            } else {
-                if (climbCannonSafetyUsed) {
-					climbCannonSafetyUsed = false;
-					if (previousCannonPower == 0) {
-						// 90 degrees the arm should be standing up vertically
-						// try to hold cannon in place
-						if (currentAngle < 90){
-							RaiseCannon(0.05,false); 
-						} else {
-							LowerCannon(0.05, false); 
-						}
-					} else {
-						RestoreCannonMovement();
-					}
+                if (IsAngleLessThanPivotMinSafe(currentAngle)) {
+			    	climbCannonSafetyUsed = true;
+			    	climbCannonSafeZone = false;
+                    RaiseCannon(0.08, false);  
+                } else if (IsAngleGreaterThanPivotMaxSafe(currentAngle)) {
+			    	climbCannonSafetyUsed = true;
+			    	climbCannonSafeZone = false;
+                    LowerCannon(0.08, false);  
+                } else {
+                    if (climbCannonSafetyUsed) {
+			    		climbCannonSafetyUsed = false;
+			    		if (previousCannonPower == 0) {
+			    			// 90 degrees the arm should be standing up vertically
+			    			// try to hold cannon in place
+			    			if (currentAngle < 66){
+			    				RaiseCannon(0.05,false); 
+			    			} else {
+			    				LowerCannon(0.01, false); 
+			    			}
+			    		} else {
+			    			RestoreCannonMovement();
+			    		}
+                    }
+			    	climbCannonSafeZone = true;
                 }
-				climbCannonSafeZone = true;
-            }
 
 
-            if (climbArmSafeZone && climbCannonSafeZone) {
-                if ((currentState == robotState.idle || currentState == robotState.readyToShoot)) {
-                    if (queuedState == robotState.climbingprep) {
-                        if (IsCannonBelowDesiredAngle(currentAngle)) {
-                           RaiseCannon(pivotspeed, true);
-                        } 
-                        if (IsCannonAboveDesiredAngle(currentAngle)) {
-                           LowerCannon(pivotspeed * 0.5, true);
+                if (climbArmSafeZone && climbCannonSafeZone) {
+                    if ((currentState == robotState.idle || currentState == robotState.readyToShoot)) {
+                        if (queuedState == robotState.climbingprep) {
+                            if (IsCannonBelowDesiredAngle(currentAngle)) {
+                               RaiseCannon(pivotspeed, true);
+                            } 
+                            if (IsCannonAboveDesiredAngle(currentAngle)) {
+                               LowerCannon(pivotspeed * 0.5, true);
+                            }
+                            ExtendArm(climbSpeed, true);
+                            currentState = robotState.climbingprep;
                         }
-                        ExtendArm(climbSpeed, true);
-                        currentState = robotState.climbingprep;
                     }
+                    if (currentState == robotState.climbingprep) {
+			    		SlowNearDesiredAngle(currentAngle);
+
+                        if (IsArmExtened(climbEncoder)) {
+                        
+			    			StopArmExtension();
+                            climbDone = true;
+
+                        }
+                        if (IsCannonAboveDesiredAngle(currentAngle + 1)) {
+
+                            pivotDone = true;
+                            RaiseCannon(0.02, true); //want to hold cannon in place
+                            LockServo();
+
+
+                        }
+                        if (pivotDone && climbDone) {
+
+                            currentState = robotState.readyToClimb;
+                            pivotDone = false;
+                            climbDone = false;
+                            RaiseCannon(0, true); //kill power to cannon it is no longer needed
+                            climbing = false; // Gets out of safety
+
+                        }
+
+                    }
+
                 }
-                if (currentState == robotState.climbingprep) {
-					SlowNearDesiredAngle(currentAngle);
 
-                    if (IsArmExtened(climbEncoder)) {
- 
-						StopArmExtension();
-                        climbDone = true;
-
-                    }
-                    if (IsCannonAboveDesiredAngle(currentAngle)) {
-
-                        pivotDone = true;
-                        RaiseCannon(0.05, true); //want to hold cannon in place
-                        LockServo();
-
-
-                    }
-                    if (pivotDone && climbDone) {
-
-                        currentState = robotState.readyToClimb;
-                        climbing = false;
-                        pivotDone = false;
-                        climbDone = false;
-                        RaiseCannon(0, true); //kill power to cannon it is no longer needed
-
-                    }
-
-                }
+            }
                 
                 if (currentState == robotState.readyToClimb) {
 
@@ -713,13 +727,16 @@ public class RobotSubsystem extends SubsystemBase {
                     if (climbDone) {
 
                         currentState = robotState.matchFinish;
+                        climbing = false;
+                        climbArmSafetyUsed = false;
+                        climbCannonSafetyUsed = false;
 
                     }
 
-                } 
+                }
 
-            }
 
+                
         }
 
     }
@@ -763,19 +780,19 @@ public class RobotSubsystem extends SubsystemBase {
 
     public void debugSmartDashboard() {
 
-        SmartDashboard.putNumber("desiredAngle", desiredAngle);
-        SmartDashboard.putNumber("sensor", sensor.getVoltage());
+        // SmartDashboard.putNumber("desiredAngle", desiredAngle);
+        // SmartDashboard.putNumber("sensor", sensor.getVoltage());
         SmartDashboard.putString("currentstate", currentState.toString());
         SmartDashboard.putString("queuedstate", queuedState.toString());
-        SmartDashboard.putNumber("Test", climb.motor.motor.getEncoder().getPosition());
-        SmartDashboard.putNumber("Pid", pidCalcValue);
-        SmartDashboard.putNumber("pidval", pidSetValue);
-        SmartDashboard.putNumber("ClimbHall", Math.abs(climb.motor.inBuiltEncoder.getPosition()));
-        SmartDashboard.putNumber("ClimbTarget", climbRevs);
-        SmartDashboard.putBoolean("isPivoting", pivoting);
-        SmartDashboard.putNumber("cannonmotorspeed", cannon.mainMotor.inBuiltEncoder.getVelocity());
-        SmartDashboard.putNumber("pivot", pivot.mainMotor.getAbsoluteRawAngle() + 20);
-        SmartDashboard.putNumber("pivotVal", pivot.mainMotor.getAbsoluteRawAngle() + 20);
+        // SmartDashboard.putNumber("Test", climb.motor.motor.getEncoder().getPosition());
+        // SmartDashboard.putNumber("Pid", pidCalcValue);
+        // SmartDashboard.putNumber("pidval", pidSetValue);
+        // SmartDashboard.putNumber("ClimbHall", Math.abs(climb.motor.inBuiltEncoder.getPosition()));
+        // SmartDashboard.putNumber("ClimbTarget", climbRevs);
+        // SmartDashboard.putBoolean("isPivoting", pivoting);
+        // SmartDashboard.putNumber("cannonmotorspeed", cannon.mainMotor.inBuiltEncoder.getVelocity());
+        // SmartDashboard.putNumber("pivot", pivot.mainMotor.getAbsoluteRawAngle() + 20);
+        // SmartDashboard.putNumber("pivotVal", pivot.mainMotor.getAbsoluteRawAngle() + 20);
 
     }
     

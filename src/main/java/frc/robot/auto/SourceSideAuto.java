@@ -9,14 +9,18 @@ public class SourceSideAuto extends SequentialCommandGroup{
     
     public SourceSideAuto(RobotSubsystem robot, DriveSubsystem drive) {
 
-        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-            addCommands(new AutoShoot(robot, 65).alongWith(new AutoCannonPreSpin(robot)));
-            addCommands(new AutoDrive(drive, 30, 210, 0.4, 0));
-            addCommands(new AutoDrive(drive, 7.5, 0, 0, 0.125));;
-        } else if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-            addCommands(new AutoShoot(robot, 65).alongWith(new AutoCannonPreSpin(robot)));
-            addCommands(new AutoDrive(drive, 30, 330, 0.4, 0));
-            addCommands(new AutoDrive(drive, 7.5, 0, 0, -0.125));;
+        if (DriverStation.getAlliance().isPresent()){
+        
+            if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+                addCommands(new AutoShoot(robot, 65).alongWith(new AutoCannonPreSpin(robot)));
+                addCommands(new AutoDrive(drive, 30, 330, 0.4, 0));
+                addCommands(new AutoDrive(drive, 7.5, 0, 0, -0.125));
+            } else {
+                addCommands(new AutoShoot(robot, 65).alongWith(new AutoCannonPreSpin(robot)));
+                addCommands(new AutoDrive(drive, 30, 210, 0.4, 0));
+                addCommands(new AutoDrive(drive, 7.5, 0, 0, 0.125));
+            }
+
         }
 
     }

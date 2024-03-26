@@ -32,8 +32,8 @@ public class AutoChooser extends Command{
 
         m_chooser.setDefaultOption("Choose Auto", null);
         m_chooser.addOption("Leave", m_LeaveAuto);
-        m_chooser.addOption("Amp Side", m_AmpSideAuto);
-        m_chooser.addOption("Source Side", m_SourceSideAuto);
+        m_chooser.addOption("Amp Side (WORK IN PROGRESS)", m_AmpSideAuto);
+        m_chooser.addOption("Source Side (WORK IN PROGRESS)", m_SourceSideAuto);
         m_chooser.addOption("2 Notes", m_TwoNoteAuto);
         m_chooser.addOption("3 Notes", m_ThreeNoteAuto);
         m_chooser.addOption("4 Notes", m_FourNoteAuto);
