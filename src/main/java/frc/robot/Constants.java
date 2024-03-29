@@ -46,8 +46,8 @@ public final class Constants {
   public static final double PivotOffset = 112.39;
 
   // Swerve
-  public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(FrontRightDriveID, FrontRightSteerID, 3.343750, 360, 8.75, -1, -1);
-  public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(FrontLeftDriveID, FrontLeftSteerID, 3.402344, 360, 330, -1, 1);
+  public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(FrontRightDriveID, FrontRightSteerID, 3.371094, 360, 82.5, -1, -1);
+  public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(FrontLeftDriveID, FrontLeftSteerID, 3.410156, 360, 293, -1, 1);
   public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(BackRightDriveID, BackRightSteerID, 3.406250, 360, 336.75, 1, -1);
   public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(BackLeftDriveID, BackLeftSteerID, 3.484375, 360, 174.75, 1, 1);
 

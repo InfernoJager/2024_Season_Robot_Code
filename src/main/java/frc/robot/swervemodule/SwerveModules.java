@@ -6,7 +6,10 @@ package frc.robot.swervemodule;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Makes it easier to access swerve modules */
@@ -51,7 +54,8 @@ public class SwerveModules implements Iterable<SwerveModule> {
   }
 
   public void debugSmartDashboard() {
-    
+
+    // Shuffleboard.getTab("Programming Data");
     SmartDashboard.putNumber("FRAngle", frontRight.getWheelAngle());
     SmartDashboard.putNumber("FRPower", frontRight.angleMotor.get());
     SmartDashboard.putNumber("FLAngle", frontLeft.getWheelAngle());
