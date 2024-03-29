@@ -4,8 +4,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import javax.swing.text.StyleContext.SmallAttributeSet;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.subsystems.RobotSubsystem;
 import frc.robot.subsystems.RobotSubsystem.robotState;
@@ -55,7 +53,7 @@ public class OperatorControls extends Command{
         /*Operator Button Board*/
         if (buttonBoard.getRawButton(intake)) {
             SmartDashboard.putString("buttonPressed", "Intake");
-            robot.SetIntakeSpeed(0.4);
+            robot.SetIntakeSpeed(0.9);
             robot.SetPivotSpeed(-1);
             robot.SetDesiredAngle(21);
             robot.SetQueuedState(robotState.intakingPivot);
@@ -71,7 +69,7 @@ public class OperatorControls extends Command{
             SmartDashboard.putString("buttonPressed", "Climbing Prep");
             robot.SetQueuedState(robotState.climbingprep);
             robot.SetClimbSpeed(1);
-            robot.SetDesiredAngle(66);
+            robot.SetDesiredAngle(68);
             robot.SetPivotSpeed(0.11);
             robot.SetDesriedClimb(13);
             robot.ClimbStart();

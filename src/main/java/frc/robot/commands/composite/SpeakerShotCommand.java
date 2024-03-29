@@ -16,7 +16,7 @@ public class SpeakerShotCommand extends SequentialCommandGroup {
 
     public SpeakerShotCommand(FeederSubsystem feederSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
         double shotAngle = 65;
-        double pivotSpeed = 0.5;
+        double pivotSpeed = -1;
         double shotSpeed = 1;
         double cannonSpeed = 400;
         double idleAngle = 33;

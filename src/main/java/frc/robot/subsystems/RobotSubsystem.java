@@ -63,7 +63,7 @@ public class RobotSubsystem extends SubsystemBase {
         this.pivotpid.enableContinuousInput(0, 360);
         this.pivotpid.setTolerance(0.25);
         this.intake = new Motors(Constants.INTAKE, false, false);
-        this.intake.SetRampRate(0.01);
+        this.intake.SetRampRate(0.25);
         this.climb = new Motors(Constants.CLIMB_ARM, false, false);
         this.belt = new Motors(Constants.FEEDER_BELT, false, false);
 
@@ -648,7 +648,7 @@ public class RobotSubsystem extends SubsystemBase {
 			    		if (previousCannonPower == 0) {
 			    			// 90 degrees the arm should be standing up vertically
 			    			// try to hold cannon in place
-			    			if (currentAngle < 66){
+			    			if (currentAngle < 70){
 			    				RaiseCannon(0.05,false); 
 			    			} else {
 			    				LowerCannon(0.01, false); 
@@ -683,7 +683,7 @@ public class RobotSubsystem extends SubsystemBase {
                             climbDone = true;
 
                         }
-                        if (IsCannonAboveDesiredAngle(currentAngle + 1)) {
+                        if (IsCannonAboveDesiredAngle(currentAngle)) {
 
                             pivotDone = true;
                             RaiseCannon(0.02, true); //want to hold cannon in place
@@ -694,9 +694,9 @@ public class RobotSubsystem extends SubsystemBase {
                         if (pivotDone && climbDone) {
 
                             currentState = robotState.readyToClimb;
+                            RaiseCannon(0, true); //kill power to cannon it is no longer needed
                             pivotDone = false;
                             climbDone = false;
-                            RaiseCannon(0, true); //kill power to cannon it is no longer needed
                             climbing = false; // Gets out of safety
 
                         }
@@ -726,12 +726,17 @@ public class RobotSubsystem extends SubsystemBase {
                     }
                     if (climbDone) {
 
-                        currentState = robotState.matchFinish;
-                        climbing = false;
                         climbArmSafetyUsed = false;
                         climbCannonSafetyUsed = false;
+                        currentState = robotState.matchFinish;
 
                     }
+
+                }
+                if (currentState == robotState.matchFinish) {
+
+                    climbDone = false;
+                    climbing = false;
 
                 }
 
