@@ -71,7 +71,7 @@ public class RobotSubsystem extends SubsystemBase {
         this.climb = new Motors(Constants.CLIMB_ARM, false, false);
         this.belt = new Motors(Constants.FEEDER_BELT, false, false);
 
-        this.sensor = new AnalogInput(3);
+        this.sensor = new AnalogInput(0);
         this.cannonLockRight = new Servo(1);
         this.cannonLockLeft = new Servo(2);
 
@@ -220,11 +220,11 @@ public class RobotSubsystem extends SubsystemBase {
         }
         if (currentState == robotState.ampShooting && GetNearDesiredAngle(80, 1) && Math.abs(cannon.mainMotor.inBuiltEncoder.getVelocity()) >= 400) {
 
-            SetDesiredAngle(104);
+            SetDesiredAngle(107);
             SetPivotSpeed(-0.5);
-            PivotStart(104);
+            PivotStart(107);
+            belt.Spin(-0.6);
             queuedState = robotState.ampAngleShoot;
-            belt.Spin(-0.5);
 
         }
         if (currentState == robotState.speakerShooting || currentState == robotState.trapShoot || (DriverStation.isAutonomous() && queuedState == robotState.speakerShooting)) {
@@ -762,7 +762,7 @@ public class RobotSubsystem extends SubsystemBase {
 
         boolean isReady = false;
 
-        isReady = sensor.getVoltage() < 0.01;
+        isReady = sensor.getVoltage() < 0.05;
 
         return isReady;
 
@@ -776,8 +776,16 @@ public class RobotSubsystem extends SubsystemBase {
         return () -> this.isNoteOut(sensor);
     }
 
-    public DoubleSupplier SesnorValSupplier() {
+    public DoubleSupplier SensorValSupplier() {
         return () -> sensor.getVoltage();
+    }
+
+    public DoubleSupplier PivotAngle() {
+        return () -> pivot.mainMotor.getAbsoluteRawAngle() + 20;
+    }
+
+    public DoubleSupplier ShootSpeed() {
+        return () -> cannon.mainMotor.inBuiltEncoder.getVelocity();
     }
 
     private boolean isNoteOut(AnalogInput sensor) {

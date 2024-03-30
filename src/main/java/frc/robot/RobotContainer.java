@@ -63,15 +63,30 @@ public class RobotContainer {
 
     Shuffleboard.getTab("Programming Data")
       .getLayout("Sensor Data", "Grid Layout")
-      .addBoolean("Note In Sensor", robot.isNoteInSupplier());
+      .withSize(3, 1)
+      .addBoolean("Note In Sensor", robot.isNoteInSupplier())
+      .withPosition(1, 2);
     
     Shuffleboard.getTab("Programming Data")
       .getLayout("Sensor Data", "Grid Layout")
-      .addDouble("Sensor Val", robot.SesnorValSupplier());
+      .addDouble("Sensor Val", robot.SensorValSupplier())
+      .withPosition(2, 2);
 
     Shuffleboard.getTab("Programming Data")
       .getLayout("Sensor Data", "Grid Layout")
-      .addBoolean("Note Out Sensor", robot.isNoteOutSupplier());
+      .addBoolean("Note Out Sensor", robot.isNoteOutSupplier())
+      .withPosition(3, 2);
+
+    Shuffleboard.getTab("Programming Data")
+      .getLayout("Shoot Data", "Grid Layout")
+      .withSize(2, 1)
+      .addDouble("Pivot Val", robot.PivotAngle())
+      .withPosition(1, 2);
+
+    Shuffleboard.getTab("Programming Data")
+      .getLayout("Shoot Data", "Grid Layout")
+      .addDouble("Shooter Speed", robot.ShootSpeed())
+      .withPosition(2, 2);
     
     SmartDashboard.putData(new InstantCommand(()->{DriveSubsystem.resetGyro(0);}));
   }
@@ -82,10 +97,10 @@ public class RobotContainer {
   }
 
   public void displayDebug() {
-    drive.modules.debugSmartDashboard();
+    // drive.modules.debugSmartDashboard();
     // robot.pivot.debugSmartDashboard();
     robot.debugSmartDashboard();
     // limelight.LimelightWhere();
-    drive.modules.encoderVoltage();
+    // drive.modules.encoderVoltage();
   }
 }
