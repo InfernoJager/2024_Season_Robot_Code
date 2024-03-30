@@ -1,6 +1,5 @@
-package frc.robot.auto;
+package frc.robot.auto.autocommands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.utils.VectorR;
@@ -15,8 +14,9 @@ public class AutoDrive extends Command {
     private double magnitude;
     private double turnSpeed;
     private boolean turning;
+    private double desiredAngle;
 
-    public AutoDrive(DriveSubsystem drive, double distance, double angle, double magnitude, double turnSpeed) {
+    public AutoDrive(DriveSubsystem drive, double distance, double angle, double magnitude, double turnSpeed, double desiredAngle) {
 
         // angle is on a cartesian, forward is 270, right is 0, back is 90, left is 180
         this.drive = drive;
@@ -25,6 +25,7 @@ public class AutoDrive extends Command {
         this.angle = angle;
         this.magnitude = magnitude;
         this.turnSpeed = turnSpeed;
+        this.desiredAngle = desiredAngle;
 
     }
 
@@ -36,7 +37,11 @@ public class AutoDrive extends Command {
 
     @Override
     public void execute() {
-        
+
+        if (Math.abs(drive.GetGyro() - desiredAngle) < 1) {
+            turnSpeed = 0;
+        }
+
         if (Math.abs(turnSpeed) > 0) {
             turning = true;
         } else {

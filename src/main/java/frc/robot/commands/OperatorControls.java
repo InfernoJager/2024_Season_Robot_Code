@@ -53,7 +53,7 @@ public class OperatorControls extends Command{
         /*Operator Button Board*/
         if (buttonBoard.getRawButton(intake)) {
             SmartDashboard.putString("buttonPressed", "Intake");
-            robot.SetIntakeSpeed(0.9);
+            robot.SetIntakeSpeed(0.60);
             robot.SetPivotSpeed(-1);
             robot.SetDesiredAngle(21);
             robot.SetQueuedState(robotState.intakingPivot);
@@ -98,9 +98,9 @@ public class OperatorControls extends Command{
         if (buttonBoard.getRawButtonPressed(ampShoot)) {
             SmartDashboard.putString("buttonPressed", "Amp Shoot");
             robot.SetQueuedState(robotState.ampShooting);
-            robot.SetDesiredAngle(80);
+            robot.SetDesiredAngle(85);
             robot.SetPivotSpeed(-0.5);
-            robot.SetShootSpeed(-0.13);
+            robot.SetShootSpeed(-0.1);
         }
         
         robot.NoteBack();
@@ -108,6 +108,7 @@ public class OperatorControls extends Command{
         robot.Climb();
         robot.Shoot();
         robot.Pivot();
+        robot.Led();
 
     }
 

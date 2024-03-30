@@ -2,13 +2,18 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.motor.PairedMotors;
 import frc.robot.motor.Motors;
 import frc.robot.Constants;
 import frc.robot.commands.DriverControls;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.hal.HAL.SimPeriodicAfterCallback;
@@ -48,6 +53,7 @@ public class RobotSubsystem extends SubsystemBase {
     private double pidFinalValue;
     private double wantedFeed;
     private double wantedShoot;
+    private PWM led;
     private Servo cannonLockLeft;
     private Servo cannonLockRight;   
     private double beltSpeakerPos;
@@ -68,6 +74,7 @@ public class RobotSubsystem extends SubsystemBase {
         this.belt = new Motors(Constants.FEEDER_BELT, false, false);
 
         this.sensor = new AnalogInput(0);
+        this.led = new PWM(0);
         this.cannonLockRight = new Servo(1);
         this.cannonLockLeft = new Servo(2);
 
@@ -110,6 +117,22 @@ public class RobotSubsystem extends SubsystemBase {
         intake.Spin(0);
         cannon.Spin(0);
 
+
+    }
+
+    public void Led() {
+
+        if ((currentState == robotState.idle && (queuedState == robotState.speakerShooting || queuedState == robotState.ampShooting))) {
+            led.setSpeed(0.61);
+        } else if (queuedState == robotState.idle) {
+            led.setSpeed(0.75);
+        } else if (queuedState == robotState.readyToShoot) {
+            led.setSpeed(0.63);
+        } else if (queuedState == robotState.intakingPivot || queuedState == robotState.speakerShooting || (queuedState == robotState.ampShooting || queuedState == robotState.ampAngleShoot)) {
+            led.setSpeed(-0.91);
+        } else if (queuedState == robotState.climbing || queuedState == robotState.climbingprep) {
+            led.setSpeed(-0.99);
+        }
 
     }
 
@@ -172,6 +195,7 @@ public class RobotSubsystem extends SubsystemBase {
 
         if (currentState == robotState.noteRetractingStart) {
             Feed(0.25);
+            cannon.Spin(0.1);
         }
         if (isNoteOut(sensor) && currentState == robotState.noteRetractingStart) {
             wantedFeed = currentFeed;
@@ -179,6 +203,7 @@ public class RobotSubsystem extends SubsystemBase {
         }
         if (currentState == robotState.noteRetracting && currentFeed <= wantedFeed) {
             Feed(0);
+            cannon.Spin(0);
             currentState = robotState.readyToShoot;
         }
 
@@ -190,7 +215,7 @@ public class RobotSubsystem extends SubsystemBase {
         double currentShoot = cannon.mainMotor.inBuiltEncoder.getPosition();
 
         if (queuedState == robotState.ampShooting) {
-            target = 80;
+            target = 85;
         }
         if (queuedState == robotState.speakerShooting || queuedState == robotState.trapShoot) {
             target = targetAngle;
@@ -212,7 +237,7 @@ public class RobotSubsystem extends SubsystemBase {
             currentState = queuedState;
 
         }
-        if (currentState == robotState.ampShooting && GetNearDesiredAngle(80, 1) && Math.abs(cannon.mainMotor.inBuiltEncoder.getVelocity()) >= 400) {
+        if (currentState == robotState.ampShooting && GetNearDesiredAngle(85, 1) && Math.abs(cannon.mainMotor.inBuiltEncoder.getVelocity()) >= 200) {
 
             SetDesiredAngle(104);
             SetPivotSpeed(-0.5);
@@ -692,11 +717,11 @@ public class RobotSubsystem extends SubsystemBase {
 
                         }
                         if (pivotDone && climbDone) {
-
-                            currentState = robotState.readyToClimb;
+                            
                             RaiseCannon(0, true); //kill power to cannon it is no longer needed
                             pivotDone = false;
                             climbDone = false;
+                            currentState = robotState.readyToClimb;
                             climbing = false; // Gets out of safety
 
                         }
@@ -760,6 +785,18 @@ public class RobotSubsystem extends SubsystemBase {
 
         return isReady;
 
+    }
+
+    public BooleanSupplier isNoteInSupplier() {
+        return () -> this.isNoteIn(sensor);
+    }
+    
+    public BooleanSupplier isNoteOutSupplier() {
+        return () -> this.isNoteOut(sensor);
+    }
+
+    public DoubleSupplier SesnorValSupplier() {
+        return () -> sensor.getVoltage();
     }
 
     private boolean isNoteOut(AnalogInput sensor) {

@@ -1,14 +1,14 @@
-package frc.robot.auto;
+package frc.robot.auto.autocommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.RobotSubsystem;
 import frc.robot.subsystems.RobotSubsystem.robotState;
 
-public class AutoCannonPreSpin extends Command {
+public class AutoIntake extends Command {
     
     private final RobotSubsystem m_robot;
-    
-    public AutoCannonPreSpin(RobotSubsystem robot) {
+
+    public AutoIntake(RobotSubsystem robot) {
 
         m_robot = robot;
 
@@ -16,19 +16,22 @@ public class AutoCannonPreSpin extends Command {
 
     @Override
     public void initialize() {
-        
-        m_robot.SetShootSpeed(-1);
+
+        m_robot.SetIntakeSpeed(0.5);
+        m_robot.SetPivotSpeed(-1);
+        m_robot.SetDesiredAngle(21);
+        m_robot.SetQueuedState(robotState.intakingPivot);
 
     }
 
     @Override
     public void execute() {
-        m_robot.Shoot();
+        m_robot.NoteBack();
     }
 
     @Override
     public boolean isFinished() {
-        return (m_robot.GetRobotCurrentState() == robotState.idle);
+        return (m_robot.GetRobotCurrentState() == robotState.readyToShoot);
     }
 
     @Override

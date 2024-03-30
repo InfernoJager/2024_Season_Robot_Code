@@ -48,8 +48,8 @@ public final class Constants {
   // Swerve
   public static final SwerveModuleInfo FRONT_RIGHT = new SwerveModuleInfo(FrontRightDriveID, FrontRightSteerID, 3.371094, 360, 82.5, -1, -1);
   public static final SwerveModuleInfo FRONT_LEFT = new SwerveModuleInfo(FrontLeftDriveID, FrontLeftSteerID, 3.410156, 360, 113, -1, 1);
-  public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(BackRightDriveID, BackRightSteerID, 3.406250, 360, 336.75, 1, -1);
-  public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(BackLeftDriveID, BackLeftSteerID, 3.484375, 360, 174.75, 1, 1);
+  public static final SwerveModuleInfo BACK_RIGHT = new SwerveModuleInfo(BackRightDriveID, BackRightSteerID, 3.433594, 360, 88.25, 1, -1);
+  public static final SwerveModuleInfo BACK_LEFT = new SwerveModuleInfo(BackLeftDriveID, BackLeftSteerID, 3.496094, 360, 98.5, 1, 1);
 
   // Robot
   public static final MotorInfo CANNON_MAIN = new MotorInfo(MainCannonID, 0, 0);

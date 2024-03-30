@@ -1,29 +1,23 @@
-package frc.robot.auto;
+package frc.robot.auto.autocommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.RobotSubsystem;
 import frc.robot.subsystems.RobotSubsystem.robotState;
 
-public class AutoShoot extends Command{
+public class AutoCannonPreSpin extends Command {
+    
     private final RobotSubsystem m_robot;
-    private double shootAngle;
-
-    public AutoShoot(RobotSubsystem robot, double angle) {
+    
+    public AutoCannonPreSpin(RobotSubsystem robot) {
 
         m_robot = robot;
-        shootAngle = angle;
 
     }
 
     @Override
     public void initialize() {
         
-        m_robot.SetRobotCurrentState(robotState.readyToShoot);
-        m_robot.SetDesiredAngle(shootAngle);
-        m_robot.SetTargetAngle(shootAngle);
-        m_robot.SetPivotSpeed(-1);
         m_robot.SetShootSpeed(-1);
-        m_robot.SetQueuedState(robotState.speakerShooting);
 
     }
 
