@@ -79,9 +79,9 @@ public class DriveSubsystem extends SubsystemBase {
       }
 
       if (!turning && currentYaw > desiredYaw - 0.25) {
-        turnSpeed = -0.0475;
+        turnSpeed = -0.02;
       } else if (!turning && currentYaw < desiredYaw + 0.25) {
-        turnSpeed = 0.0475;
+        turnSpeed = 0.02;
       } else if (!turning) {
         turnSpeed = 0;
       }

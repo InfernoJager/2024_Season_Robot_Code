@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -44,11 +45,12 @@ public class RobotContainer {
   OperatorControls operator;
   Motors encodeTest;
 
-  //private final SendableChooser<Command> autoChooser;
+  // private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
     drive.setDefaultCommand(new DriverControls(drive, robot, driverController));
     robot.setDefaultCommand(new OperatorControls(robot, operatorController, buttonBoard));
+
     configureBindings();
 
     //autoChooser = AutoBuilder.buildAutoChooser();
@@ -57,13 +59,25 @@ public class RobotContainer {
 
   
   private void configureBindings() {
-    //SmartDashboard.putData("Test Auto", new PathPlannerAuto("New Auto"));
+    // SmartDashboard.putData("Test Auto", new PathPlannerAuto("New Auto"));
+
+    Shuffleboard.getTab("Programming Data")
+      .getLayout("Sensor Data", "Grid Layout")
+      .addBoolean("Note In Sensor", robot.isNoteInSupplier());
+    
+    Shuffleboard.getTab("Programming Data")
+      .getLayout("Sensor Data", "Grid Layout")
+      .addDouble("Sensor Val", robot.SesnorValSupplier());
+
+    Shuffleboard.getTab("Programming Data")
+      .getLayout("Sensor Data", "Grid Layout")
+      .addBoolean("Note Out Sensor", robot.isNoteOutSupplier());
     
     SmartDashboard.putData(new InstantCommand(()->{DriveSubsystem.resetGyro(0);}));
   }
 
  public Command getAutonomousCommand() {
-    //return autoChooser.getSelected();
+    // return autoChooser.getSelected();
     return auto.GetAuto();
   }
 

@@ -3,12 +3,16 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.motor.PairedMotors;
 import frc.robot.motor.Motors;
 import frc.robot.Constants;
 import frc.robot.commands.DriverControls;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.hal.HAL.SimPeriodicAfterCallback;
@@ -67,7 +71,7 @@ public class RobotSubsystem extends SubsystemBase {
         this.climb = new Motors(Constants.CLIMB_ARM, false, false);
         this.belt = new Motors(Constants.FEEDER_BELT, false, false);
 
-        this.sensor = new AnalogInput(0);
+        this.sensor = new AnalogInput(3);
         this.cannonLockRight = new Servo(1);
         this.cannonLockLeft = new Servo(2);
 
@@ -172,6 +176,7 @@ public class RobotSubsystem extends SubsystemBase {
 
         if (currentState == robotState.noteRetractingStart) {
             Feed(0.25);
+            cannon.Spin(0.1);
         }
         if (isNoteOut(sensor) && currentState == robotState.noteRetractingStart) {
             wantedFeed = currentFeed;
@@ -179,6 +184,7 @@ public class RobotSubsystem extends SubsystemBase {
         }
         if (currentState == robotState.noteRetracting && currentFeed <= wantedFeed) {
             Feed(0);
+            cannon.Spin(0);
             currentState = robotState.readyToShoot;
         }
 
@@ -760,6 +766,18 @@ public class RobotSubsystem extends SubsystemBase {
 
         return isReady;
 
+    }
+
+    public BooleanSupplier isNoteInSupplier() {
+        return () -> this.isNoteIn(sensor);
+    }
+    
+    public BooleanSupplier isNoteOutSupplier() {
+        return () -> this.isNoteOut(sensor);
+    }
+
+    public DoubleSupplier SesnorValSupplier() {
+        return () -> sensor.getVoltage();
     }
 
     private boolean isNoteOut(AnalogInput sensor) {
