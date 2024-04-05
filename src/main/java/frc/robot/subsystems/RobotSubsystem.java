@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -122,16 +123,20 @@ public class RobotSubsystem extends SubsystemBase {
 
     public void Led() {
 
-        if ((currentState == robotState.idle && (queuedState == robotState.speakerShooting || queuedState == robotState.ampShooting))) {
+        if (RobotController.getBatteryVoltage() < 7.5) {
+            led.setSpeed(-0.85);
+        } else if ((currentState == robotState.idle && (queuedState == robotState.speakerShooting || queuedState == robotState.ampShooting)) || (currentState == robotState.readyToShoot && queuedState == robotState.intakingPivot)) {
             led.setSpeed(0.61);
-        } else if (queuedState == robotState.idle) {
-            led.setSpeed(0.75);
-        } else if (queuedState == robotState.readyToShoot) {
-            led.setSpeed(0.63);
         } else if (queuedState == robotState.intakingPivot || queuedState == robotState.speakerShooting || (queuedState == robotState.ampShooting || queuedState == robotState.ampAngleShoot)) {
             led.setSpeed(-0.91);
         } else if (queuedState == robotState.climbing || queuedState == robotState.climbingprep) {
             led.setSpeed(-0.99);
+        } else if (DriverStation.getMatchTime() < 30 && DriverStation.getMatchTime() > 27 && DriverStation.isTeleop()) {
+            led.setSpeed(-0.97);
+        } else if (queuedState == robotState.idle) {
+            led.setSpeed(0.75);
+        } else if (queuedState == robotState.readyToShoot) {
+            led.setSpeed(0.63);
         }
 
     }
@@ -734,6 +739,7 @@ public class RobotSubsystem extends SubsystemBase {
                 
                 if (currentState == robotState.readyToClimb) {
 
+                    RaiseCannon(0, true);
                     if (queuedState == robotState.climbing) {
 
                         RetractArm(climbSpeed, true);  

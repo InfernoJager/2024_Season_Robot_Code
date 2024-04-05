@@ -9,7 +9,7 @@ public class SourceSideAuto extends SequentialCommandGroup{
     
     public SourceSideAuto(RobotSubsystem robot, DriveSubsystem drive) {
 
-        if (DriverStation.getAlliance().isPresent()){
+        if (DriverStation.getAlliance().isPresent()) {
         
             // if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
             //     addCommands(new AutoShoot(robot, 65).alongWith(new AutoCannonPreSpin(robot)));

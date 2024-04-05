@@ -82,10 +82,10 @@ public class RobotContainer {
   }
 
   public void displayDebug() {
-    //drive.modules.debugSmartDashboard();
+    // drive.modules.debugSmartDashboard();
     // robot.pivot.debugSmartDashboard();
     robot.debugSmartDashboard();
     // limelight.LimelightWhere();
-    drive.modules.encoderVoltage();
+    // drive.modules.encoderVoltage();
   }
 }
