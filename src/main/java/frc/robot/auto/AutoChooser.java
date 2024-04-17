@@ -41,16 +41,21 @@ public class AutoChooser extends Command{
 
         m_chooser.setDefaultOption("Choose Auto", null);
         m_chooser.addOption("Center Autos:", null);
-        m_chooser.addOption("  - 2 Notes", m_TwoNoteAuto);
+        m_chooser.addOption("  - 2 Notes To Center", m_TwoNoteAuto);
         m_chooser.addOption("  - 3 Notes To Amp", m_ThreeAmpNoteAuto);
         m_chooser.addOption("  - 3 Notes To Source", m_ThreeSourceNoteAuto);
         m_chooser.addOption("  - 4 Notes", m_FourNoteAuto);
         m_chooser.addOption("Side Autos:", null);
         m_chooser.addOption("  - Amp Side", m_AmpSideAuto);
-        m_chooser.addOption("  - Source Side (WORK IN PROGRESS)", m_SourceSideAuto);
         m_chooser.addOption("Alternate Autos:", null);
         m_chooser.addOption("  - Leave", m_LeaveAuto);
         m_chooser.addOption("  - Test Auto (PROGRAMMING ONLY)", m_TestAuto);
+        m_chooser.addOption("WIP Autos (DO NOT USE)", m_AmpSideAuto);
+        m_chooser.addOption("  - 2 Notes To Amp", null);
+        m_chooser.addOption("  - 2 Notes To Source", null);
+        m_chooser.addOption("  - 2 Notes Amp Side", null);
+        m_chooser.addOption("  - Source Side", m_SourceSideAuto);
+        m_chooser.addOption("  - 2 Notes Source Side", null);
 
         SmartDashboard.putData(m_chooser);
 

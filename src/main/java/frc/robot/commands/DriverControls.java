@@ -9,8 +9,7 @@ import frc.robot.subsystems.RobotSubsystem;
 import frc.robot.subsystems.RobotSubsystem.robotState;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.DriverStation;
-
-import java.lang.Math;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.utils.VectorR;
 
 public class DriverControls extends Command {
@@ -18,6 +17,7 @@ public class DriverControls extends Command {
     private final DriveSubsystem drive;
     private final RobotSubsystem robot;
     private final XboxController driverController;
+    private Timer hapticTimer = new Timer();
     private VectorR leftJoystick = new VectorR();
 
     public DriverControls(DriveSubsystem drive, RobotSubsystem robot, XboxController driverController) {
@@ -58,8 +58,13 @@ public class DriverControls extends Command {
                 drive.stop();
             }
 
-            if (robot.GetRobotCurrentState() == robotState.noteRetracting) {
+            if ((robot.GetRobotCurrentState() == robotState.noteRetracting || robot.GetRobotCurrentState() == robotState.noteRetractingStart)) {
                 driverController.setRumble(RumbleType.kBothRumble, 1);
+                hapticTimer.reset();
+                hapticTimer.start();
+            } else if (hapticTimer.get() > 1) {
+                driverController.setRumble(RumbleType.kBothRumble, 0);
+                hapticTimer.stop();
             }
 
         }
